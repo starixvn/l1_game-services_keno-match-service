@@ -1,5 +1,6 @@
 import { choices, choicesMapper } from "./constants";
-import { generateResult, getSettlementResult } from "./helpers/result-helper";
+import { getSettlementResult } from "./helpers/result-helper";
+import generateResult from "./helpers/shuffleNumbers";
 import getBetLogsRepository from "./models/bet-logs";
 import getBetRepository from "./models/bets";
 import getRoundRepository from "./models/rounds";
@@ -12,6 +13,7 @@ export default [
             wholeRound: 60,
             halfTimePlacingBets: 42,
             halfTimeLockingBet: 30,
+            finishHalfTime: 25,
             placingBets: 18,
             lockingBet: 5,
         },
@@ -23,7 +25,7 @@ export default [
             betsRepository: getBetRepository("MyDinh_one"),
             betLogsRepository: getBetLogsRepository("MyDinh_cuoc"),
         },
-        generateResult: () => generateResult(10, 80),
+        generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
         settle: getSettlementResult,
     },
     {
@@ -44,7 +46,7 @@ export default [
             betsRepository: getBetRepository("HangDay_one"),
             betLogsRepository: getBetLogsRepository("HangDay_cuoc"),
         },
-        generateResult: () => generateResult(10, 80),
+        generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
         settle: getSettlementResult,
     },
     {
@@ -65,7 +67,7 @@ export default [
             betsRepository: getBetRepository("ThongNhat_one"),
             betLogsRepository: getBetLogsRepository("ThongNhat_cuoc"),
         },
-        generateResult: () => generateResult(10, 80),
+        generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
         settle: getSettlementResult,
     },
 ];

@@ -2,6 +2,7 @@ import { Core } from "sc-game-base";
 import { GameDefinition } from "sc-multiple-games-base";
 
 import appConfigs from "./app-configs";
+import { GameData } from "./game-data";
 import gameSettings from "./game-settings";
 import KenoSoccerContainerRegistry from "./keno-soccer-container-registry";
 
@@ -14,7 +15,7 @@ class KenoSoccerApp extends Core.BaseGameApp {
             const container = new KenoSoccerContainerRegistry().register(
                 this.appConfigs,
                 definition,
-                new Core.GameData(definition.durations.wholeRound)
+                new GameData(definition.durations.wholeRound)
             );
             await this.startGame(container);
         });

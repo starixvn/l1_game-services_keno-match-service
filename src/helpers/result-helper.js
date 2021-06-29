@@ -1,12 +1,3 @@
-import shuffleNumbers from "./shuffleNumbers";
-
-export const generateResult = (numberOfPicked, numberOfSeeds) => {
-    const home = shuffleNumbers(numberOfPicked, numberOfSeeds);
-    const away = shuffleNumbers(numberOfPicked, numberOfPicked);
-
-    return { home, away };
-};
-
 const fullTimeRuleEntries = Object.entries({
     home: ({ totalHome, totalAway }) => totalHome > totalAway,
     away: ({ totalHome, totalAway }) => totalHome < totalAway,

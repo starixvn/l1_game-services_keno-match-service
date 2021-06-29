@@ -1,16 +1,15 @@
 import { asClass, asValue } from "awilix";
-import { Core } from "sc-game-base";
 import { GameDefinition, MultipleGamesContainerRegistry } from "sc-multiple-games-base";
 
 import { PlaceBetConsumer, SettleGameRoundConsumer } from "./consumers";
 import { GameCron, ProcessBetQueue } from "./crons";
+import { GameData } from "./game-data";
 
 export default class KenoSoccerContainerRegistry extends MultipleGamesContainerRegistry {
     /**
      * @param {object} appConfigs
      * @param {GameDefinition} definition
-     * @param {Core.GameData} gameData
-     * @returns
+     * @param {GameData} gameData
      */
     register(appConfigs, definition, gameData) {
         super.register(appConfigs, definition, gameData);

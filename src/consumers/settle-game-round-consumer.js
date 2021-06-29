@@ -5,7 +5,11 @@ import { sumArrayNumber, sumArrayObject } from "../helpers/array-helper";
 
 export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameRoundConsumer {
     async handleFinishHalfTime() {
-        const result = this.definition.generateResult();
+        const result = {
+            home: this.definition.generateResult(),
+            away: this.definition.generateResult(),
+        };
+        this.gameData.halfTimeResult = result;
         const totalHome = sumArrayNumber(result.home);
         const totalAway = sumArrayNumber(result.away);
         const sum = totalHome + totalAway;
@@ -20,7 +24,11 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
     }
 
     async settleRound() {
-        const result = this.generateResult();
+        const halfTimeResult = this.gameData.halfTimeResult;
+        const result = {
+            home: this.definition.generateResult(halfTimeResult.home),
+            away: this.definition.generateResult(halfTimeResult.away),
+        };
         const totalHome = sumArrayNumber(result.home);
         const totalAway = sumArrayNumber(result.away);
         const sum = totalHome + totalAway;
@@ -56,7 +64,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
             await Promise.all(
                 bets.map(async (bet) => {
                     const halfTimeBetResult = this.calculateBetResult(halfTime.settlementResult, bet, odds, true);
-                    const fullTimeBetResult = this.calculateBetResult(halfTime.settlementResult, bet, odds, false);
+                    const fullTimeBetResult = this.calculateBetResult(fullTime.settlementResult, bet, odds, false);
                     const betResult = sumArrayObject([halfTimeBetResult, fullTimeBetResult]);
 
                     bet.betwin = betResult.totalWin;

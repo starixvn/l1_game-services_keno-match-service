@@ -3,30 +3,31 @@ import { MersenneTwister19937, Random } from "random-js";
 
 const chance = new Chance();
 const random = new Random(MersenneTwister19937.autoSeed());
-const generateSeeds = (numberOfSeeds) => [...Array(numberOfSeeds + 1).keys()].slice(1);
+const generateSeeds = (numberOfSeeds, excludeNumbers) => {
+    const result = [...Array(numberOfSeeds + 1).keys()].slice(1);
 
-const shuffleThenPickByChance = (numberOfPicked, numberOfSeeds) => {
-    return chance.pickset(generateSeeds(numberOfSeeds), numberOfPicked);
-};
-
-const randomUniqueNumbersByChance = (numberOfPicked, numberOfSeeds) =>
-    chance.unique(chance.natural, numberOfPicked, { min: 1, max: numberOfSeeds });
-
-const shuffleThenPickByRandomJs = (numberOfPicked, numberOfSeeds) => {
-    return random.shuffle(generateSeeds(numberOfSeeds)).slice(0, numberOfPicked);
-};
-
-const randomlyPickNumbersByRandomJs = (numberOfPicked, numberOfSeeds) => {
-    return random.sample(generateSeeds(numberOfSeeds), numberOfPicked);
-};
-
-const algorithms = [shuffleThenPickByChance, randomUniqueNumbersByChance, shuffleThenPickByRandomJs, randomlyPickNumbersByRandomJs];
-
-export default (numberOfPicked, numberOfSeeds) => {
-    const randomSelection = chance.natural({ min: 0, max: algorithms.length - 1 });
-    const result = algorithms[randomSelection](numberOfPicked, numberOfSeeds);
-
-    result.sort((pre, next) => pre - next);
+    if (excludeNumbers && excludeNumbers.length) {
+        return result.filter((n) => !excludeNumbers.includes(n));
+    }
 
     return result;
+};
+
+const shuffleThenPickByChance = (numberOfPicked, numberOfSeeds, excludeNumbers) => {
+    return chance.pickset(generateSeeds(numberOfSeeds, excludeNumbers), numberOfPicked);
+};
+
+const shuffleThenPickByRandomJs = (numberOfPicked, numberOfSeeds, excludeNumbers) => {
+    return random.shuffle(generateSeeds(numberOfSeeds, excludeNumbers)).slice(0, numberOfPicked);
+};
+
+const randomlyPickNumbersByRandomJs = (numberOfPicked, numberOfSeeds, excludeNumbers) => {
+    return random.sample(generateSeeds(numberOfSeeds, excludeNumbers), numberOfPicked);
+};
+
+const algorithms = [shuffleThenPickByChance, shuffleThenPickByRandomJs, randomlyPickNumbersByRandomJs];
+
+export default (numberOfPicked, numberOfSeeds, excludeNumbers) => {
+    const randomSelection = chance.natural({ min: 0, max: algorithms.length - 1 });
+    return algorithms[randomSelection](numberOfPicked, numberOfSeeds, excludeNumbers);
 };
