@@ -1,6 +1,43 @@
+import cron from "cron";
+import mongoose from "mongoose";
 import { Core } from "sc-game-base";
 
 export class GameCron extends Core.Crons.BaseGameCron {
+    /**
+     * @param {Object} dependencies
+     * @param {mongoose.Model} dependencies.globalConfigsRepository
+     */
+    constructor({
+        definition,
+        gameData,
+        bot,
+        settleGameRoundConsumer,
+        gameStatusPublisher,
+        runningRoundInfoPublisher,
+        logService,
+        gameConfigsRepository,
+        roundsRepository,
+        archiveStatusesRepository,
+        notificationRepository,
+        globalConfigsRepository,
+    }) {
+        super({
+            definition,
+            gameData,
+            bot,
+            settleGameRoundConsumer,
+            gameStatusPublisher,
+            runningRoundInfoPublisher,
+            logService,
+            gameConfigsRepository,
+            roundsRepository,
+            archiveStatusesRepository,
+            notificationRepository,
+        });
+
+        this.globalConfigsRepository = globalConfigsRepository;
+    }
+
     async start() {
         const lastRound = await this.roundsRepository
             .findOne({}, "id", { sort: { id: -1 } })
@@ -28,6 +65,8 @@ export class GameCron extends Core.Crons.BaseGameCron {
             this.gameData.roundId = await this.getLastArchiveRound();
         }
 
+        await this.updateLiveOdds();
+
         job.start();
     }
 
@@ -41,5 +80,14 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
     resetForNewRound() {
         this.gameData.halfTimeResult = {};
+    }
+
+    async checkGameStatus() {
+        await super.checkGameStatus();
+        await this.updateLiveOdds();
+    }
+
+    async updateLiveOdds() {
+        this.gameData.liveOdds = await this.globalConfigsRepository.findOne({ type: "kenosoccer_liveodds" }, "homeAway overUnder").lean();
     }
 }

@@ -14,9 +14,12 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
         const totalAway = sumArrayNumber(result.away);
         const sum = totalHome + totalAway;
         const settlementResult = this.definition.settle({ totalHome, totalAway }, true);
+        const { gameConfigs, liveOdds } = this.gameData;
+        const odds = { ...gameConfigs.odds, ...liveOdds.homeAway[totalHome - totalAway], ...liveOdds.overUnder[sum] };
 
         await this.roundsRepository.create({
             id: this.gameData.roundId,
+            odds,
             halfTime: { result, sum, settlementResult, time: new Date() },
         });
 
@@ -70,6 +73,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
                     bet.betwin = betResult.totalWin;
                     bet.refund = betResult.refund;
                     bet.thanhtoan = true;
+                    bet.odds = odds;
 
                     await bet.save();
                     await this.callEndGame(bet, roundId, fullTime.time, betResult);

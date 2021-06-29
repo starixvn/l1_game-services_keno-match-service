@@ -5,6 +5,7 @@ const schema = new mongoose.Schema({
     name: { type: String, required: true },
     phien: { type: Number, required: true },
     time: { type: Date },
+    odds: { type: Object },
 
     preHTHome: { type: Number, default: 0 },
     preHTAway: { type: Number, default: 0 },

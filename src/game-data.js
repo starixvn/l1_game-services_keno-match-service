@@ -5,5 +5,6 @@ export class GameData extends Core.GameData {
         super(remainingTime);
 
         this.halfTimeResult = {};
+        this.liveOdds = {};
     }
 }

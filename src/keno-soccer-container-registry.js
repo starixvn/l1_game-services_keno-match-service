@@ -4,6 +4,7 @@ import { GameDefinition, MultipleGamesContainerRegistry } from "sc-multiple-game
 import { PlaceBetConsumer, SettleGameRoundConsumer } from "./consumers";
 import { GameCron, ProcessBetQueue } from "./crons";
 import { GameData } from "./game-data";
+import globalConfigs from "./models/global-configs";
 
 export default class KenoSoccerContainerRegistry extends MultipleGamesContainerRegistry {
     /**
@@ -17,6 +18,14 @@ export default class KenoSoccerContainerRegistry extends MultipleGamesContainerR
         this.registerRepositories(definition.repositories);
 
         return this.container;
+    }
+
+    registerModels() {
+        super.registerModels();
+
+        this.container.register({
+            globalConfigsRepository: asValue(globalConfigs),
+        });
     }
 
     registerRepositories(repositories) {
