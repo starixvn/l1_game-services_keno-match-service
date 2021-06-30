@@ -9,9 +9,10 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
             home: this.definition.generateResult(),
             away: this.definition.generateResult(),
         };
-        this.gameData.halfTimeResult = result;
+
         const totalHome = sumArrayNumber(result.home);
         const totalAway = sumArrayNumber(result.away);
+        this.gameData.halfTimeResult = { ...result, totalHome, totalAway };
         const sum = totalHome + totalAway;
         const settlementResult = this.definition.settle({ totalHome, totalAway }, true);
         const { gameConfigs, liveOdds } = this.gameData;
@@ -32,8 +33,8 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
             home: this.definition.generateResult(halfTimeResult.home),
             away: this.definition.generateResult(halfTimeResult.away),
         };
-        const totalHome = sumArrayNumber(result.home);
-        const totalAway = sumArrayNumber(result.away);
+        const totalHome = sumArrayNumber(result.home) + halfTimeResult.totalHome;
+        const totalAway = sumArrayNumber(result.away) + halfTimeResult.totalAway;
         const sum = totalHome + totalAway;
         const settlementResult = this.definition.settle({ totalHome, totalAway }, false);
         const update = {
