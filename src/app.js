@@ -6,7 +6,7 @@ import { GameData } from "./game-data";
 import gameSettings from "./game-settings";
 import KenoSoccerContainerRegistry from "./keno-soccer-container-registry";
 
-class KenoSoccerApp extends Core.BaseGameApp {
+export class KenoSoccerApp extends Core.BaseGameApp {
     /**
      * @param {GameDefinition[]} definitions
      */
