@@ -11,12 +11,12 @@ export const choices = [
     "preFTUnder",
     "preFTOdd",
     "preFTEven",
-    "inRunFTHome",
-    "inRunFTAway",
-    "inRunFTOver",
-    "inRunFTUnder",
-    "inRunFTOdd",
-    "inRunFTEven",
+    "liveFTHome",
+    "liveFTAway",
+    "liveFTOver",
+    "liveFTUnder",
+    "liveFTOdd",
+    "liveFTEven",
 ];
 
 export const preLiveChoices = [
@@ -50,15 +50,15 @@ export const fullTimeChoiceMapper = {
     preFTUnder: "under",
     preFTOdd: "odd",
     preFTEven: "even",
-    inRunFTHome: "home",
-    inRunFTAway: "away",
-    inRunFTOver: "over",
-    inRunFTUnder: "under",
-    inRunFTOdd: "odd",
-    inRunFTEven: "even",
+    liveFTHome: "home",
+    liveFTAway: "away",
+    liveFTOver: "over",
+    liveFTUnder: "under",
+    liveFTOdd: "odd",
+    liveFTEven: "even",
 };
 
-export const inRunningChoices = ["inRunFTHome", "inRunFTAway", "inRunFTOver", "inRunFTUnder", "inRunFTOdd", "inRunFTEven"];
+export const liveChoices = ["liveFTHome", "liveFTAway", "liveFTOver", "liveFTUnder", "liveFTOdd", "liveFTEven"];
 
 export const choicesMapper = {
     preHTHome: 1,
@@ -73,10 +73,10 @@ export const choicesMapper = {
     preFTUnder: 10,
     preFTOdd: 11,
     preFTEven: 12,
-    inRunFTHome: 13,
-    inRunFTAway: 14,
-    inRunFTOver: 15,
-    inRunFTUnder: 16,
-    inRunFTOdd: 17,
-    inRunFTEven: 18,
+    liveFTHome: 13,
+    liveFTAway: 14,
+    liveFTOver: 15,
+    liveFTUnder: 16,
+    liveFTOdd: 17,
+    liveFTEven: 18,
 };

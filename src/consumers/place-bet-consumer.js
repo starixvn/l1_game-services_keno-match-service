@@ -1,7 +1,7 @@
 import { helpers } from "sc-common";
 import { Core } from "sc-game-base";
 
-import { inRunningChoices, preLiveChoices } from "../constants";
+import { liveChoices, preLiveChoices } from "../constants";
 
 export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
     composeBettingTimeValidationCriteria(roundId) {
@@ -39,7 +39,7 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
                 failure:
                     this.gameData.remainingTime >= this.definition.durations.lockingBet &&
                     this.gameData.remainingTime < this.definition.durations.placingBets &&
-                    !inRunningChoices.includes(betChoice),
+                    !liveChoices.includes(betChoice),
                 notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
             },
             {
