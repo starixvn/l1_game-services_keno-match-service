@@ -35,6 +35,7 @@ export default [
             wholeRound: 60,
             halfTimePlacingBets: 42,
             halfTimeLockingBet: 30,
+            finishHalfTime: 25,
             placingBets: 18,
             lockingBet: 5,
         },
