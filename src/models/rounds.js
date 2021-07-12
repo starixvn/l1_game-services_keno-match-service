@@ -35,6 +35,7 @@ const schema = new mongoose.Schema({
     halfTime: halfSchema,
     fullTime: halfSchema,
     odds: { type: Object },
+    time: { type: Date, default: new Date() },
 });
 
 export default (modelName) => {
