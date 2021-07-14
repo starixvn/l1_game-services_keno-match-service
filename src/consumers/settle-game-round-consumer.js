@@ -5,7 +5,6 @@ import { sumArrayNumber, sumArrayObject } from "../helpers/array-helper";
 
 export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameRoundConsumer {
     async handleFinishHalfTime() {
-        console.log("handleFinishHalfTime");
         const result = {
             home: this.definition.generateResult(),
             away: this.definition.generateResult(),
@@ -14,7 +13,6 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
         const totalHome = sumArrayNumber(result.home);
         const totalAway = sumArrayNumber(result.away);
         this.gameData.halfTimeResult = { ...result, totalHome, totalAway };
-        console.log(this.gameData.halfTimeResult);
         const sum = totalHome + totalAway;
         const settlementResult = this.definition.settle({ totalHome, totalAway }, true);
         const { gameConfigs } = this.gameData;
@@ -33,41 +31,35 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
     }
 
     async settleRound() {
-        console.log("settleRound");
-        try {
-            const halfTimeResult = this.gameData.halfTimeResult;
-            const result = {
-                home: this.definition.generateResult(halfTimeResult.home),
-                away: this.definition.generateResult(halfTimeResult.away),
-            };
-            console.log(halfTimeResult);
-            const totalHome = sumArrayNumber(result.home) + halfTimeResult.totalHome;
-            const totalAway = sumArrayNumber(result.away) + halfTimeResult.totalAway;
-            const sum = totalHome + totalAway;
-            const settlementResult = this.definition.settle({ totalHome, totalAway }, false);
-            const update = {
-                fullTime: {
-                    result,
-                    sum,
-                    settlementResult,
-                    time: new Date(),
-                },
-            };
-            const round = await this.roundsRepository.findOneAndUpdate(
-                {
-                    id: this.gameData.roundId,
-                },
-                update,
-                { new: true }
-            );
+        const halfTimeResult = this.gameData.halfTimeResult;
+        const result = {
+            home: this.definition.generateResult(halfTimeResult.home),
+            away: this.definition.generateResult(halfTimeResult.away),
+        };
+        const totalHome = sumArrayNumber(result.home) + halfTimeResult.totalHome;
+        const totalAway = sumArrayNumber(result.away) + halfTimeResult.totalAway;
+        const sum = totalHome + totalAway;
+        const settlementResult = this.definition.settle({ totalHome, totalAway }, false);
+        const update = {
+            fullTime: {
+                result,
+                sum,
+                settlementResult,
+                time: new Date(),
+            },
+        };
+        const round = await this.roundsRepository.findOneAndUpdate(
+            {
+                id: this.gameData.roundId,
+            },
+            update,
+            { new: true }
+        );
 
-            if (round) {
-                this.gameData.roundId = round.id + 1;
+        if (round) {
+            this.gameData.roundId = round.id + 1;
 
-                await this.settleBets(round);
-            }
-        } catch (ex) {
-            console.log(ex);
+            await this.settleBets(round);
         }
     }
 

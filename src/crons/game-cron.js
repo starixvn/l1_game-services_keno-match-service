@@ -2,6 +2,8 @@ import cron from "cron";
 import mongoose from "mongoose";
 import { Core } from "sc-game-base";
 
+import { sumArrayNumber } from "../helpers/array-helper";
+
 export class GameCron extends Core.Crons.BaseGameCron {
     /**
      * @param {Object} dependencies
@@ -40,7 +42,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
     async start() {
         const lastRound = await this.roundsRepository
-            .findOne({}, "id", { sort: { id: -1 } })
+            .findOne({}, "id halfTime fullTime", { sort: { id: -1 } })
             .lean()
             .exec();
 
@@ -60,6 +62,15 @@ export class GameCron extends Core.Crons.BaseGameCron {
                 this.gameData.roundId = lastRound.id + 1;
             } else {
                 this.gameData.remainingTime = this.definition.durations.finishHalfTime;
+                const halfTimeResult = lastRound.halfTime.result;
+
+                this.gameData.halfTimeResult = {
+                    ...halfTimeResult,
+                    totalHome: sumArrayNumber(halfTimeResult.home),
+                    totalAway: sumArrayNumber(halfTimeResult.away),
+                };
+
+                this.checkGameStatus();
             }
         } else {
             this.gameData.roundId = await this.getLastArchiveRound();
@@ -72,9 +83,6 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
     async proceed() {
         await super.proceed();
-        console.log(this.definition.name + this.gameData.remainingTime);
-
-        console.log(this.gameData.disabled);
         if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.finishHalfTime) {
             await this.settleGameRoundConsumer.handleFinishHalfTime();
         }
