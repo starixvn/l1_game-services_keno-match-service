@@ -31,35 +31,40 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
     }
 
     async settleRound() {
-        const halfTimeResult = this.gameData.halfTimeResult;
-        const result = {
-            home: this.definition.generateResult(halfTimeResult.home),
-            away: this.definition.generateResult(halfTimeResult.away),
-        };
-        const totalHome = sumArrayNumber(result.home) + halfTimeResult.totalHome;
-        const totalAway = sumArrayNumber(result.away) + halfTimeResult.totalAway;
-        const sum = totalHome + totalAway;
-        const settlementResult = this.definition.settle({ totalHome, totalAway }, false);
-        const update = {
-            fullTime: {
-                result,
-                sum,
-                settlementResult,
-                time: new Date(),
-            },
-        };
-        const round = await this.roundsRepository.findOneAndUpdate(
-            {
-                id: this.gameData.roundId,
-            },
-            update,
-            { new: true }
-        );
+        console.log("settleRound");
+        try {
+            const halfTimeResult = this.gameData.halfTimeResult;
+            const result = {
+                home: this.definition.generateResult(halfTimeResult.home),
+                away: this.definition.generateResult(halfTimeResult.away),
+            };
+            const totalHome = sumArrayNumber(result.home) + halfTimeResult.totalHome;
+            const totalAway = sumArrayNumber(result.away) + halfTimeResult.totalAway;
+            const sum = totalHome + totalAway;
+            const settlementResult = this.definition.settle({ totalHome, totalAway }, false);
+            const update = {
+                fullTime: {
+                    result,
+                    sum,
+                    settlementResult,
+                    time: new Date(),
+                },
+            };
+            const round = await this.roundsRepository.findOneAndUpdate(
+                {
+                    id: this.gameData.roundId,
+                },
+                update,
+                { new: true }
+            );
 
-        if (round) {
-            this.gameData.roundId = round.id + 1;
+            if (round) {
+                this.gameData.roundId = round.id + 1;
 
-            await this.settleBets(round);
+                await this.settleBets(round);
+            }
+        } catch (ex) {
+            console.log(ex);
         }
     }
 

@@ -78,6 +78,10 @@ export class GameCron extends Core.Crons.BaseGameCron {
         }
     }
 
+    isStartingTime(remainingTime, durations) {
+        return remainingTime === durations.halfTimePlacingBets;
+    }
+
     resetForNewRound() {
         this.gameData.halfTimeResult = {};
     }
