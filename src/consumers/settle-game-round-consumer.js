@@ -5,6 +5,7 @@ import { sumArrayNumber, sumArrayObject } from "../helpers/array-helper";
 
 export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameRoundConsumer {
     async handleFinishHalfTime() {
+        console.log("handleFinishHalfTime");
         const result = {
             home: this.definition.generateResult(),
             away: this.definition.generateResult(),

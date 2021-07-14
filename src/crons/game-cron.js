@@ -72,7 +72,9 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
     async proceed() {
         await super.proceed();
+        console.log(this.definition.name + this.gameData.remainingTime);
 
+        console.log(this.gameData.disabled);
         if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.finishHalfTime) {
             await this.settleGameRoundConsumer.handleFinishHalfTime();
         }
