@@ -15,8 +15,9 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
         this.gameData.halfTimeResult = { ...result, totalHome, totalAway };
         const sum = totalHome + totalAway;
         const settlementResult = this.definition.settle({ totalHome, totalAway }, true);
-        const { gameConfigs, liveOdds } = this.gameData;
-        const odds = { ...gameConfigs.odds, ...liveOdds.homeAway[totalHome - totalAway], ...liveOdds.overUnder[sum] };
+        const { gameConfigs } = this.gameData;
+        const liveOdds = { ...this.gameData.liveOdds.homeAway[totalHome - totalAway], ...this.gameData.liveOdds.overUnder[sum] };
+        const odds = { ...gameConfigs.odds, ...liveOdds };
 
         await this.roundsRepository.create({
             id: this.gameData.roundId,
@@ -24,7 +25,9 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
             halfTime: { result, sum, settlementResult, time: new Date() },
         });
 
-        this.roundResultPublisher.publishRoundResult(this.collectRoundResult(result, settlementResult, `${this.gameData.roundId}-1`));
+        const payload = { finishHalfTime: { ...this.collectRoundResult(result, settlementResult, this.gameData.roundId), liveOdds } };
+        this.roundResultPublisher.publishToAllUsers(payload);
+        this.roundResultPublisher.publishToAllAdmins(payload);
     }
 
     async settleRound() {
@@ -85,7 +88,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
             );
         }
 
-        this.roundResultPublisher.publishRoundResult(this.collectRoundResult(fullTime.result, fullTime.settlementResult, `${roundId}-2`));
+        this.roundResultPublisher.publishRoundResult(this.collectRoundResult(fullTime.result, fullTime.settlementResult, roundId));
     }
 
     calculateBetResult(settlementResult, bet, odds, isHalfTime) {
