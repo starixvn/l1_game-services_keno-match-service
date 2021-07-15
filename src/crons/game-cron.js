@@ -82,9 +82,31 @@ export class GameCron extends Core.Crons.BaseGameCron {
     }
 
     async proceed() {
-        await super.proceed();
+        const { durations } = this.definition;
+
+        if (this.gameData.remainingTime === durations.wholeRound) {
+            await this.checkGameStatus();
+        }
+
+        if (!this.gameData.disabled) {
+            this.gameData.remainingTime--;
+        }
+
+        if (this.isStartingTime(this.gameData.remainingTime, durations)) {
+            this.resetForNewRound();
+            this.bot && (await this.bot.reset());
+        }
+
         if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.finishHalfTime) {
             await this.settleGameRoundConsumer.handleFinishHalfTime();
+        }
+
+        if (this.gameData.remainingTime < 0) {
+            this.gameData.remainingTime = durations.wholeRound;
+            await this.settleGameRoundConsumer.settleRound(this.gameData);
+        } else if (this.gameData.remainingTime < durations.halfTimePlacingBets) {
+            this.bot && (await this.bot.run());
+            this.runningRoundInfoPublisher.publish();
         }
     }
 

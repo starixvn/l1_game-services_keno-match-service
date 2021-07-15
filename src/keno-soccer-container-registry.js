@@ -1,7 +1,7 @@
 import { asClass, asValue } from "awilix";
 import { GameDefinition, MultipleGamesContainerRegistry } from "sc-multiple-games-base";
 
-import { PlaceBetConsumer, SettleGameRoundConsumer } from "./consumers";
+import { AdminMonitorConsumer, PlaceBetConsumer, SettleGameRoundConsumer } from "./consumers";
 import { GameCron, ProcessBetQueue } from "./crons";
 import { GameData } from "./game-data";
 import globalConfigs from "./models/global-configs";
@@ -52,6 +52,7 @@ export default class KenoSoccerContainerRegistry extends MultipleGamesContainerR
         this.container.register({
             placeBetConsumer: asClass(PlaceBetConsumer).singleton(),
             settleGameRoundConsumer: asClass(SettleGameRoundConsumer).singleton().proxy(),
+            adminMonitorConsumer: asClass(AdminMonitorConsumer).singleton(),
         });
     }
 }
