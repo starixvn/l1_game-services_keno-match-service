@@ -11,7 +11,7 @@ export default [
         name: "MyDinh",
         durations: {
             wholeRound: 60,
-            halfTimePlacingBets: 42,
+            halfTimePlacingBets: 52,
             halfTimeLockingBet: 30,
             finishHalfTime: 25,
             placingBets: 18,
@@ -33,7 +33,7 @@ export default [
         name: "HangDay",
         durations: {
             wholeRound: 60,
-            halfTimePlacingBets: 42,
+            halfTimePlacingBets: 52,
             halfTimeLockingBet: 30,
             finishHalfTime: 25,
             placingBets: 18,
@@ -55,7 +55,7 @@ export default [
         name: "ThongNhat",
         durations: {
             wholeRound: 60,
-            halfTimePlacingBets: 42,
+            halfTimePlacingBets: 52,
             halfTimeLockingBet: 30,
             finishHalfTime: 25,
             placingBets: 18,
