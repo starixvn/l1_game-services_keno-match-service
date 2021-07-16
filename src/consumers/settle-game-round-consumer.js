@@ -4,11 +4,31 @@ import { fullTimeChoiceMapper, halfTimeChoiceMapper } from "../constants";
 import { sumArrayNumber, sumArrayObject } from "../helpers/array-helper";
 
 export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameRoundConsumer {
+    generateHalfTimeResult() {
+        const resultFromAdmin = this.gameData.settlementResultFromAdmin;
+
+        return this.gameData.roundId === resultFromAdmin.roundId
+            ? resultFromAdmin.result.halfTime.result
+            : {
+                  home: this.definition.generateResult(),
+                  away: this.definition.generateResult(),
+              };
+    }
+
+    generateFullTimeResult() {
+        const resultFromAdmin = this.gameData.settlementResultFromAdmin;
+        const halfTimeResult = this.gameData.halfTimeResult;
+
+        return this.gameData.roundId === resultFromAdmin.roundId
+            ? resultFromAdmin.result.fullTime.result
+            : {
+                  home: this.definition.generateResult(halfTimeResult.home),
+                  away: this.definition.generateResult(halfTimeResult.away),
+              };
+    }
+
     async handleFinishHalfTime() {
-        const result = {
-            home: this.definition.generateResult(),
-            away: this.definition.generateResult(),
-        };
+        const result = this.generateHalfTimeResult();
 
         const totalHome = sumArrayNumber(result.home);
         const totalAway = sumArrayNumber(result.away);
@@ -32,10 +52,8 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
 
     async settleRound() {
         const halfTimeResult = this.gameData.halfTimeResult;
-        const result = {
-            home: this.definition.generateResult(halfTimeResult.home),
-            away: this.definition.generateResult(halfTimeResult.away),
-        };
+        const result = this.generateFullTimeResult();
+
         const totalHome = sumArrayNumber(result.home) + halfTimeResult.totalHome;
         const totalAway = sumArrayNumber(result.away) + halfTimeResult.totalAway;
         const sum = totalHome + totalAway;
