@@ -8116,7 +8116,7 @@ sc-common@^1.5.1-beta.0, sc-common@^1.6.0, sc-common@^1.7.0:
     mongoose-long "^0.3.0"
     numeral "^2.0.6"
 
-sc-game-base@^2.0.0-beta.13:
+sc-game-base@^2.0.0-beta.14:
   version "2.0.0-beta-0"
   resolved "http://npm.lumigame.com/sc-game-base/-/sc-game-base-2.0.0-beta-0.tgz#1d7c944fa8d1a188ed50111d8f77f71277483b5f"
   integrity sha512-juEKZaoz79Ys7bidUv48ApHDLJSSK9hTpNjLNsC57IkbsnryIzXZeLbfeyUZYcID5Ukvb4UdtPtWPgAS0CNXNw==

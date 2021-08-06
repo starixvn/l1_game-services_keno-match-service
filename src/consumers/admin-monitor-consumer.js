@@ -1,5 +1,4 @@
 import { Core } from "sc-game-base";
-import { Socket } from "socket.io";
 
 export class AdminMonitorConsumer extends Core.BaseEventConsumers.AdminMonitorConsumer {
     constructor(definition, gameData, adminPublisher, roundsRepository) {

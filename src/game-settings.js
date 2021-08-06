@@ -7,7 +7,7 @@ import getRoundRepository from "./models/rounds";
 
 export default  {
     id: 37,
-    name: "KenoTwoRound",
+    name: "KenoWarTwoRound",
     durations: {
         wholeRound: 60,
         halfTimePlacingBets: 52,
@@ -20,9 +20,9 @@ export default  {
     choicesMapper,
     defaultBetTracks: {},
     repositories: {
-        roundsRepository: getRoundRepository("KenoTwoRound_phien"),
-        betsRepository: getBetRepository("KenoTwoRound_one"),
-        betLogsRepository: getBetLogsRepository("KenoTwoRound_cuoc"),
+        roundsRepository: getRoundRepository("KenoWarTwoRound_phien"),
+        betsRepository: getBetRepository("KenoWarTwoRound_one"),
+        betLogsRepository: getBetLogsRepository("KenoWarTwoRound_cuoc"),
     },
     generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
     settle: getSettlementResult,
