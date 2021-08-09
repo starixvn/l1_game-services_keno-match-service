@@ -1,13 +1,12 @@
 import { asClass, asValue } from "awilix";
-import { Core } from "sc-game-base";
+import { GameDefinition, MultipleGamesContainerRegistry } from "sc-multiple-games-base";
 
 import { AdminMonitorConsumer, PlaceBetConsumer, SettleGameRoundConsumer } from "./consumers";
 import { GameCron, ProcessBetQueue } from "./crons";
 import { GameData } from "./game-data";
 import globalConfigs from "./models/global-configs";
-import gameSettings from "./game-settings";
 
-export default class KenoSoccerContainerRegistry  extends Core.ContainerRegistry {
+export default class KenoSoccerContainerRegistry extends MultipleGamesContainerRegistry {
     /**
      * @param {object} appConfigs
      * @param {GameDefinition} definition
@@ -16,7 +15,7 @@ export default class KenoSoccerContainerRegistry  extends Core.ContainerRegistry
     register(appConfigs, definition, gameData) {
         super.register(appConfigs, definition, gameData);
 
-        this.registerRepositories(gameSettings.repositories);
+        this.registerRepositories(definition.repositories);
 
         return this.container;
     }
@@ -38,14 +37,14 @@ export default class KenoSoccerContainerRegistry  extends Core.ContainerRegistry
         });
     }
 
-    // registerCrons() {
-    //     super.registerCrons();
+    registerCrons() {
+        super.registerCrons();
 
-    //     this.container.register({
-    //         gameCron: asClass(GameCron).singleton().proxy(),
-    //         processBetQueue: asClass(ProcessBetQueue).singleton().proxy(),
-    //     });
-    // }
+        this.container.register({
+            gameCron: asClass(GameCron).singleton().proxy(),
+            processBetQueue: asClass(ProcessBetQueue).singleton().proxy(),
+        });
+    }
 
     registerConsumers() {
         super.registerConsumers();
