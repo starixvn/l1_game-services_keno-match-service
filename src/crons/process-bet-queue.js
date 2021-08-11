@@ -22,4 +22,29 @@ export class ProcessBetQueue extends Core.Crons.ProcessBetQueue {
             },
         ];
     }
+
+    async insertBetLog(player, roundId, bet) {
+        try {
+            const newBetLog = {
+                uid: player.UID,
+                name: player.profile.name,
+                phien: roundId,
+                time: new Date(),
+                choice: this.definition.choicesMapper[bet.betChoice],
+                amount: bet.amount,
+                freeBet: bet.freeBet,
+                clientSentTime: bet.clientSentTime,
+                receivedTime: bet.receivedTime,
+            };
+    
+            if (player.session) {
+                newBetLog.memberId = player.session.memberId;
+                newBetLog.siteId = player.session.siteId;
+            }
+    
+            await this.betLogsRepository.create(newBetLog);
+        } catch (error) {
+            console.log(error);
+        }    
+    }
 }

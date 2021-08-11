@@ -22,8 +22,8 @@ export default [
         defaultBetTracks: {},
         repositories: {
             roundsRepository: getRoundRepository("kenowarmatchone_phien"),
-            betsRepository: getBetRepository("kenowarmatchone_one"),
-            betLogsRepository: getBetLogsRepository("kenowarmatchone_cuoc"),
+            betsRepository: getBetRepository("kenowarmatchone_cuoc"),
+            betLogsRepository: getBetLogsRepository("kenowarmatchone_log"),
         },
         generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
         settle: getSettlementResult,
