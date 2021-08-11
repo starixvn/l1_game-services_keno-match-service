@@ -7,20 +7,20 @@ const schema = new mongoose.Schema({
     time: { type: Date },
     odds: { type: Object },
 
-    preHTHome: { type: Number, default: 0 },
-    preHTAway: { type: Number, default: 0 },
+    preHTBlue: { type: Number, default: 0 },
+    preHTRed: { type: Number, default: 0 },
     preHTOver: { type: Number, default: 0 },
     preHTUnder: { type: Number, default: 0 },
     preHTOdd: { type: Number, default: 0 },
     preHTEven: { type: Number, default: 0 },
-    preFTHome: { type: Number, default: 0 },
-    preFTAway: { type: Number, default: 0 },
+    preFTBlue: { type: Number, default: 0 },
+    preFTRed: { type: Number, default: 0 },
     preFTOver: { type: Number, default: 0 },
     preFTUnder: { type: Number, default: 0 },
     preFTOdd: { type: Number, default: 0 },
     preFTEven: { type: Number, default: 0 },
-    liveFTHome: { type: Number, default: 0 },
-    liveFTAway: { type: Number, default: 0 },
+    liveFTBlue: { type: Number, default: 0 },
+    liveFTRed: { type: Number, default: 0 },
     liveFTOver: { type: Number, default: 0 },
     liveFTUnder: { type: Number, default: 0 },
     liveFTOdd: { type: Number, default: 0 },
@@ -33,6 +33,7 @@ const schema = new mongoose.Schema({
 
     memberId: { type: Number },
     siteId: { type: String },
+    freeBet: { type: Boolean, default: false }
 });
 
 export default (modelName) => {

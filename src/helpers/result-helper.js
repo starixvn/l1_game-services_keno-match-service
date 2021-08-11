@@ -1,21 +1,21 @@
 const fullTimeRuleEntries = Object.entries({
-    home: ({ totalHome, totalAway }) => totalHome > totalAway,
-    away: ({ totalHome, totalAway }) => totalHome < totalAway,
-    draw: ({ totalHome, totalAway }) => totalHome === totalAway,
-    over: ({ totalHome, totalAway }) => totalHome + totalAway >= 1621,
-    under: ({ totalHome, totalAway }) => totalHome + totalAway < 1621,
-    odd: ({ totalHome, totalAway }) => (totalHome + totalAway) % 2 === 1,
-    even: ({ totalHome, totalAway }) => (totalHome + totalAway) % 2 === 0,
+    blue: ({ totalBlue, totalRed }) => totalBlue > totalRed,
+    red: ({ totalBlue, totalRed }) => totalBlue < totalRed,
+    draw: ({ totalBlue, totalRed }) => totalBlue === totalRed,
+    over: ({ totalBlue, totalRed }) => totalBlue + totalRed >= 1621,
+    under: ({ totalBlue, totalRed }) => totalBlue + totalRed < 1621,
+    odd: ({ totalBlue, totalRed }) => (totalBlue + totalRed) % 2 === 1,
+    even: ({ totalBlue, totalRed }) => (totalBlue + totalRed) % 2 === 0,
 });
 
 const halfTimeRuleEntries = Object.entries({
-    home: ({ totalHome, totalAway }) => totalHome > totalAway,
-    away: ({ totalHome, totalAway }) => totalHome < totalAway,
-    draw: ({ totalHome, totalAway }) => totalHome === totalAway,
-    over: ({ totalHome, totalAway }) => totalHome + totalAway >= 811,
-    under: ({ totalHome, totalAway }) => totalHome + totalAway < 811,
-    odd: ({ totalHome, totalAway }) => (totalHome + totalAway) % 2 === 1,
-    even: ({ totalHome, totalAway }) => (totalHome + totalAway) % 2 === 0,
+    blue: ({ totalBlue, totalRed }) => totalBlue > totalRed,
+    red: ({ totalBlue, totalRed }) => totalBlue < totalRed,
+    draw: ({ totalBlue, totalRed }) => totalBlue === totalRed,
+    over: ({ totalBlue, totalRed }) => totalBlue + totalRed >= 811,
+    under: ({ totalBlue, totalRed }) => totalBlue + totalRed < 811,
+    odd: ({ totalBlue, totalRed }) => (totalBlue + totalRed) % 2 === 1,
+    even: ({ totalBlue, totalRed }) => (totalBlue + totalRed) % 2 === 0,
 });
 
 export const getSettlementResult = (totalPoints, isHalfTime) => {

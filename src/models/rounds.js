@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const settlementResultSchema = new mongoose.Schema(
     {
-        home: { type: Boolean, default: false },
-        away: { type: Boolean, default: false },
+        blue: { type: Boolean, default: false },
+        red: { type: Boolean, default: false },
         over: { type: Boolean, default: false },
         under: { type: Boolean, default: false },
         odd: { type: Boolean, default: false },
@@ -14,8 +14,8 @@ const settlementResultSchema = new mongoose.Schema(
 
 const resultSchema = new mongoose.Schema(
     {
-        home: { type: [Number], required: true },
-        away: { type: [Number], required: true },
+        blue: { type: [Number], required: true },
+        red: { type: [Number], required: true },
     },
     { _id: false }
 );

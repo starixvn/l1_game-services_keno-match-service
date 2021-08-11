@@ -21,9 +21,9 @@ export default [
         choicesMapper,
         defaultBetTracks: {},
         repositories: {
-            roundsRepository: getRoundRepository("KenoWarMatchOne_phien"),
-            betsRepository: getBetRepository("KenoWarMatchOne_one"),
-            betLogsRepository: getBetLogsRepository("KenoWarMatchOne_cuoc"),
+            roundsRepository: getRoundRepository("kenowarmatchone_phien"),
+            betsRepository: getBetRepository("kenowarmatchone_one"),
+            betLogsRepository: getBetLogsRepository("kenowarmatchone_cuoc"),
         },
         generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
         settle: getSettlementResult,

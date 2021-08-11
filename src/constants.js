@@ -1,18 +1,18 @@
 export const choices = [
-    "preHTHome",
-    "preHTAway",
+    "preHTBlue",
+    "preHTRed",
     "preHTOver",
     "preHTUnder",
     "preHTOdd",
     "preHTEven",
-    "preFTHome",
-    "preFTAway",
+    "preFTBlue",
+    "preFTRed",
     "preFTOver",
     "preFTUnder",
     "preFTOdd",
     "preFTEven",
-    "liveFTHome",
-    "liveFTAway",
+    "liveFTBlue",
+    "liveFTRed",
     "liveFTOver",
     "liveFTUnder",
     "liveFTOdd",
@@ -20,14 +20,14 @@ export const choices = [
 ];
 
 export const preLiveChoices = [
-    "preHTHome",
-    "preHTAway",
+    "preHTBlue",
+    "preHTRed",
     "preHTOver",
     "preHTUnder",
     "preHTOdd",
     "preHTEven",
-    "preFTHome",
-    "preFTAway",
+    "preFTBlue",
+    "preFTRed",
     "preFTOver",
     "preFTUnder",
     "preFTOdd",
@@ -35,8 +35,8 @@ export const preLiveChoices = [
 ];
 
 export const halfTimeChoiceMapper = {
-    preHTHome: "home",
-    preHTAway: "away",
+    preHTBlue: "blue",
+    preHTRed: "red",
     preHTOver: "over",
     preHTUnder: "under",
     preHTOdd: "odd",
@@ -44,37 +44,37 @@ export const halfTimeChoiceMapper = {
 };
 
 export const fullTimeChoiceMapper = {
-    preFTHome: "home",
-    preFTAway: "away",
+    preFTBlue: "blue",
+    preFTRed: "red",
     preFTOver: "over",
     preFTUnder: "under",
     preFTOdd: "odd",
     preFTEven: "even",
-    liveFTHome: "home",
-    liveFTAway: "away",
+    liveFTBlue: "blue",
+    liveFTRed: "red",
     liveFTOver: "over",
     liveFTUnder: "under",
     liveFTOdd: "odd",
     liveFTEven: "even",
 };
 
-export const liveChoices = ["liveFTHome", "liveFTAway", "liveFTOver", "liveFTUnder", "liveFTOdd", "liveFTEven"];
+export const liveChoices = ["liveFTBlue", "liveFTRed", "liveFTOver", "liveFTUnder", "liveFTOdd", "liveFTEven"];
 
 export const choicesMapper = {
-    preHTHome: 1,
-    preHTAway: 2,
+    preHTBlue: 1,
+    preHTRed: 2,
     preHTOver: 3,
     preHTUnder: 4,
     preHTOdd: 5,
     preHTEven: 6,
-    preFTHome: 7,
-    preFTAway: 8,
+    preFTBlue: 7,
+    preFTRed: 8,
     preFTOver: 9,
     preFTUnder: 10,
     preFTOdd: 11,
     preFTEven: 12,
-    liveFTHome: 13,
-    liveFTAway: 14,
+    liveFTBlue: 13,
+    liveFTRed: 14,
     liveFTOver: 15,
     liveFTUnder: 16,
     liveFTOdd: 17,
