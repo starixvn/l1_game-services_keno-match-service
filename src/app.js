@@ -4,15 +4,15 @@ import { GameDefinition } from "sc-multiple-games-base";
 import appConfigs from "./app-configs";
 import { GameData } from "./game-data";
 import gameSettings from "./game-settings";
-import KenoSoccerContainerRegistry from "./keno-soccer-container-registry";
+import KenoMatchContainerRegistry from "./keno-match-container-registry";
 
-export class KenoSoccerApp extends Core.BaseGameApp {
+export class KenoMatchApp extends Core.BaseGameApp {
     /**
      * @param {GameDefinition[]} definitions
      */
     startGames(definitions) {
         definitions.forEach(async (definition) => {
-            const container = new KenoSoccerContainerRegistry().register(
+            const container = new KenoMatchContainerRegistry().register(
                 this.appConfigs,
                 definition,
                 new GameData(definition.durations.wholeRound)
@@ -24,7 +24,7 @@ export class KenoSoccerApp extends Core.BaseGameApp {
 
 const run = async () => {
     const definitions = gameSettings.map((gameSetting) => new GameDefinition(gameSetting));
-    const app = new KenoSoccerApp("Keno Soccer", appConfigs);
+    const app = new KenoMatchApp("Keno Match", appConfigs);
     await app.run();
     app.startGames(definitions);
 };

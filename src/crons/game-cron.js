@@ -124,6 +124,6 @@ export class GameCron extends Core.Crons.BaseGameCron {
     }
 
     async updateLiveOdds() {
-        this.gameData.liveOdds = await this.globalConfigsRepository.findOne({ type: "kenosoccer_liveodds" }, "blueRed overUnder").lean();
+        this.gameData.liveOdds = await this.globalConfigsRepository.findOne({ type: this.definition.id == 36 ? "kenomatchone_liveodds" : "kenomatchtwo_liveodds"}, "blueRed overUnder").lean();
     }
 }
