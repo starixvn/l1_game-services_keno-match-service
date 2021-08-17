@@ -1,4 +1,4 @@
 include:
-  - project: "ci/repos-ci/pentagon_l1_keno_soccer_service"
+  - project: "ci/repos-ci/pentagon_l1_keno_match_service"
     ref: master
     file: "gitlab-ci.yml"
