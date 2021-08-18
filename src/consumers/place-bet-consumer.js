@@ -35,20 +35,20 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
         const baseCriteria = super.composeBetChoiceValidationCriteria(betChoice);
 
         const criteria = [
-            // {
-            //     failure:
-            //         this.gameData.remainingTime >= this.definition.durations.lockingBet &&
-            //         this.gameData.remainingTime < this.definition.durations.placingBets &&
-            //         !liveChoices.includes(betChoice),
-            //     notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
-            // },
-            // {
-            //     failure:
-            //         this.gameData.remainingTime >= this.definition.durations.halfTimeLockingBet &&
-            //         this.gameData.remainingTime < this.definition.durations.halfTimePlacingBets &&
-            //         !preLiveChoices.includes(betChoice),
-            //     notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
-            // },
+            {
+                failure:
+                    this.gameData.remainingTime >= this.definition.durations.lockingBet &&
+                    this.gameData.remainingTime < this.definition.durations.placingBets &&
+                    !liveChoices.includes(betChoice),
+                notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
+            },
+            {
+                failure:
+                    this.gameData.remainingTime >= this.definition.durations.halfTimeLockingBet &&
+                    this.gameData.remainingTime < this.definition.durations.halfTimePlacingBets &&
+                    !preLiveChoices.includes(betChoice),
+                notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
+            },
         ];
 
         return baseCriteria.concat(criteria);
