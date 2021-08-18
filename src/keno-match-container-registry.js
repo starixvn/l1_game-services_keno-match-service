@@ -6,7 +6,7 @@ import { GameCron, ProcessBetQueue } from "./crons";
 import { GameData } from "./game-data";
 import globalConfigs from "./models/global-configs";
 
-export default class KenoMatchontainerRegistry extends MultipleGamesContainerRegistry {
+export default class KenoMatchContainerRegistry extends MultipleGamesContainerRegistry {
     /**
      * @param {object} appConfigs
      * @param {GameDefinition} definition
