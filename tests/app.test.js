@@ -1,9 +1,9 @@
 import { Core } from "sc-game-base";
 
-import { KenoSoccerApp } from "../src/app";
+import { KenoMatchApp } from "../src/app";
 
-describe("Keno soccer app instance", () => {
-    const app = new KenoSoccerApp("Keno Soccer", {});
+describe("Keno match app instance", () => {
+    const app = new KenoMatchApp("Keno Match", {});
     it("inherit Core.BaseGameApp", () => {
         expect(app instanceof Core.BaseGameApp).toBeTruthy();
     });

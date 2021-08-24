@@ -16,7 +16,7 @@ export default {
     mainServerApiSettings: {
         url: "http://localhost:8080/api",
         auth: {
-            url:  "http://localhost:8898",
+            url: "http://localhost:8898",
             id: "game-services",
             secret: "gameservices@20luminet&",
         },
@@ -41,7 +41,7 @@ export default {
     },
     sentry: {
         sentryUrl: "https://13f39b8359404ed5aec23655e64ccf78@sentry.lumigame.com/2",
-        logIdentifier: "keno-soccer",
+        logIdentifier: "keno-match",
         env: "LOCAL",
     },
     authenticateSettings: {
