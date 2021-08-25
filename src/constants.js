@@ -34,7 +34,7 @@ export const preLiveChoices = [
     "ftOdd",
 ];
 
-export const halfTimeChoiceMapper = {
+export const firstHalfChoiceMapper = {
     fhBlue: "blue",
     fhRed: "red",
     fhOver: "over",

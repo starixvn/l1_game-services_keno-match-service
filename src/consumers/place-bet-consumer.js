@@ -23,8 +23,8 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
                         this.gameData.remainingTime < this.definition.durations.placingBets
                     ) ||
                     !(
-                        this.gameData.remainingTime >= this.definition.durations.halfTimeLockingBet &&
-                        this.gameData.remainingTime < this.definition.durations.halfTimePlacingBets
+                        this.gameData.remainingTime >= this.definition.durations.firstHalfLockingBet &&
+                        this.gameData.remainingTime < this.definition.durations.firstHalfPlacingBets
                     ),
                 notice: this.getNoticeObj(helpers.noticeHelper.placeBetNextRound),
             },
@@ -44,8 +44,8 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
             },
             {
                 failure:
-                    this.gameData.remainingTime >= this.definition.durations.halfTimeLockingBet &&
-                    this.gameData.remainingTime < this.definition.durations.halfTimePlacingBets &&
+                    this.gameData.remainingTime >= this.definition.durations.firstHalfLockingBet &&
+                    this.gameData.remainingTime < this.definition.durations.firstHalfPlacingBets &&
                     !preLiveChoices.includes(betChoice),
                 notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
             },

@@ -2,12 +2,14 @@ import cron from "cron";
 import mongoose from "mongoose";
 import { Core } from "sc-game-base";
 
+import { RoundResultConsumer } from "../consumers";
 import { sumArrayNumber } from "../helpers/array-helper";
 
 export class GameCron extends Core.Crons.BaseGameCron {
     /**
      * @param {Object} dependencies
      * @param {mongoose.Model} dependencies.globalConfigsRepository
+     * @param {RoundResultConsumer} dependencies.roundResultConsumer
      */
     constructor({
         definition,
@@ -21,7 +23,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
         roundsRepository,
         archiveStatusesRepository,
         notificationRepository,
-        globalConfigsRepository,
+        roundResultConsumer,
     }) {
         super({
             definition,
@@ -37,12 +39,12 @@ export class GameCron extends Core.Crons.BaseGameCron {
             notificationRepository,
         });
 
-        this.globalConfigsRepository = globalConfigsRepository;
+        this.roundResultConsumer = roundResultConsumer;
     }
 
     async start() {
         const lastRound = await this.roundsRepository
-            .findOne({}, "id halfTime fullTime", { sort: { id: -1 } })
+            .findOne({}, "id firstHalf fullTime", { sort: { id: -1 } })
             .lean()
             .exec();
 
@@ -58,25 +60,26 @@ export class GameCron extends Core.Crons.BaseGameCron {
         );
 
         if (lastRound) {
-            if (lastRound.fullTime && lastRound.fullTime.result) {
+            if (lastRound.settled) {
                 this.gameData.roundId = lastRound.id + 1;
             } else {
-                this.gameData.remainingTime = this.definition.durations.finishHalfTime;
-                const halfTimeResult = lastRound.halfTime.result;
+                if (lastRound.fullTime && lastRound.fullTime.result) {
+                    this.gameData.remainingTime = 0;
+                } else {
+                    this.gameData.remainingTime = this.definition.durations.firstHalfPlacingBets;
+                    const firstHalfResult = lastRound.firstHalf.result;
+                    this.gameData.firstHalfResult = {
+                        ...firstHalfResult,
+                        totalBlue: sumArrayNumber(firstHalfResult.blue),
+                        totalRed: sumArrayNumber(firstHalfResult.red),
+                    };
+                }
 
-                this.gameData.halfTimeResult = {
-                    ...halfTimeResult,
-                    totalHome: sumArrayNumber(halfTimeResult.home),
-                    totalAway: sumArrayNumber(halfTimeResult.away),
-                };
-
-                this.checkGameStatus();
+                await this.checkGameStatus();
             }
         } else {
             this.gameData.roundId = await this.getLastArchiveRound();
         }
-
-        await this.updateLiveOdds();
 
         job.start();
     }
@@ -94,36 +97,28 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
         if (this.isStartingTime(this.gameData.remainingTime, durations)) {
             this.resetForNewRound();
-            this.bot && (await this.bot.reset());
+            await this.roundResultConsumer.generateFirstHalfResult();
         }
 
-        if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.finishHalfTime) {
-            await this.settleGameRoundConsumer.handleFinishHalfTime();
+        if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.finishFirstHalf) {
+            await this.roundResultConsumer.handleFinishFistHalf();
         }
 
         if (this.gameData.remainingTime < 0) {
             this.gameData.remainingTime = durations.wholeRound;
-            await this.settleGameRoundConsumer.settleRound(this.gameData);
-        } else if (this.gameData.remainingTime < durations.halfTimePlacingBets) {
-            this.bot && (await this.bot.run());
+            await this.settleGameRoundConsumer.settleRound();
+        } else if (this.gameData.remainingTime < durations.firstHalfPlacingBets) {
             this.runningRoundInfoPublisher.publish();
         }
     }
 
     isStartingTime(remainingTime, durations) {
-        return remainingTime === durations.halfTimePlacingBets;
+        return remainingTime === durations.firstHalfPlacingBets;
     }
 
     resetForNewRound() {
-        this.gameData.halfTimeResult = {};
-    }
-
-    async checkGameStatus() {
-        await super.checkGameStatus();
-        await this.updateLiveOdds();
-    }
-
-    async updateLiveOdds() {
-        this.gameData.liveOdds = await this.globalConfigsRepository.findOne({ type: "kenomatch_liveodds"}, "blueRed overUnder").lean();
+        super.resetForNewRound();
+        this.gameData.liveOdds = {};
+        this.gameData.firstHalfResult = {};
     }
 }

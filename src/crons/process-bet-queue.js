@@ -15,8 +15,8 @@ export class ProcessBetQueue extends Core.Crons.ProcessBetQueue {
                         this.gameData.remainingTime < this.definition.durations.placingBets
                     ) ||
                     !(
-                        this.gameData.remainingTime >= this.definition.durations.halfTimeLockingBet &&
-                        this.gameData.remainingTime < this.definition.durations.halfTimePlacingBets
+                        this.gameData.remainingTime >= this.definition.durations.firstHalfLockingBet &&
+                        this.gameData.remainingTime < this.definition.durations.firstHalfPlacingBets
                     ),
                 notice: { errorCode: helpers.noticeHelper.placeBetNextRound },
             },

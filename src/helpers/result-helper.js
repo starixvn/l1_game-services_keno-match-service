@@ -8,7 +8,7 @@ const fullTimeRuleEntries = Object.entries({
     even: ({ totalBlue, totalRed }) => (totalBlue + totalRed) % 2 === 0,
 });
 
-const halfTimeRuleEntries = Object.entries({
+const firstHalfRuleEntries = Object.entries({
     blue: ({ totalBlue, totalRed }) => totalBlue > totalRed,
     red: ({ totalBlue, totalRed }) => totalBlue < totalRed,
     draw: ({ totalBlue, totalRed }) => totalBlue === totalRed,
@@ -18,8 +18,8 @@ const halfTimeRuleEntries = Object.entries({
     even: ({ totalBlue, totalRed }) => (totalBlue + totalRed) % 2 === 0,
 });
 
-export const getSettlementResult = (totalPoints, isHalfTime) => {
-    const ruleEntries = isHalfTime ? halfTimeRuleEntries : fullTimeRuleEntries;
+export const getSettlementResult = (totalPoints, isFirstHalf) => {
+    const ruleEntries = isFirstHalf ? firstHalfRuleEntries : fullTimeRuleEntries;
 
     return ruleEntries.reduce((result, [choice, rule]) => {
         result[choice] = rule(totalPoints);
