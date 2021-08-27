@@ -1,7 +1,7 @@
 import { Core } from "sc-game-base";
 
 export class RoundQuery extends Core.QueryApis.RoundQuery {
-    async getList(limit, projections = { id: true, firstHalf: true, fullTime: true, odds: true }) {
+    async getList(limit, projections = { _id: false, id: true, firstHalf: true, fullTime: true, odds: true }) {
         return this.roundsRepository
             .find({ settled: true }, projections, { sort: { _id: -1 }, limit: limit })
             .lean()

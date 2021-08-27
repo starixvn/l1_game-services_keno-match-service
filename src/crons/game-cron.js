@@ -63,6 +63,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
             if (lastRound.settled) {
                 this.gameData.roundId = lastRound.id + 1;
             } else {
+                this.gameData.roundId = lastRound.id;
                 if (lastRound.fullTime && lastRound.fullTime.result) {
                     this.gameData.remainingTime = 0;
                 } else {
