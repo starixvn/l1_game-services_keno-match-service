@@ -21,7 +21,7 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
                     !(
                         this.gameData.remainingTime >= this.definition.durations.lockingBet &&
                         this.gameData.remainingTime < this.definition.durations.placingBets
-                    ) ||
+                    ) &&
                     !(
                         this.gameData.remainingTime >= this.definition.durations.firstHalfLockingBet &&
                         this.gameData.remainingTime < this.definition.durations.firstHalfPlacingBets
