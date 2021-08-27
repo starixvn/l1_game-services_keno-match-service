@@ -6,6 +6,7 @@ import { GameCron, ProcessBetQueue } from "./crons";
 import { GameData } from "./game-data";
 import globalConfigs from "./models/global-configs";
 import { RoundResultPublisher } from "./publishers";
+import { HistoryQuery, RoundQuery } from "./query-apis";
 
 export default class KenoMatchContainerRegistry extends MultipleGamesContainerRegistry {
     /**
@@ -63,6 +64,14 @@ export default class KenoMatchContainerRegistry extends MultipleGamesContainerRe
 
         this.container.register({
             roundResultPublisher: asClass(RoundResultPublisher).singleton(),
+        });
+    }
+
+    registerApis() {
+        super.registerApis();
+        this.container.register({
+            roundQuery: asClass(RoundQuery).singleton(),
+            historyQuery: asClass(HistoryQuery).singleton(),
         });
     }
 }
