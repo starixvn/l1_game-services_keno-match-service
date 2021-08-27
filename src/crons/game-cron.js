@@ -68,11 +68,11 @@ export class GameCron extends Core.Crons.BaseGameCron {
                     this.gameData.remainingTime = 0;
                 } else {
                     this.gameData.remainingTime = this.definition.durations.firstHalfPlacingBets;
-                    const firstHalfResult = lastRound.firstHalf.result;
+                    const { result } = lastRound.firstHalf;
                     this.gameData.firstHalfResult = {
-                        ...firstHalfResult,
-                        totalBlue: sumArrayNumber(firstHalfResult.blue),
-                        totalRed: sumArrayNumber(firstHalfResult.red),
+                        result,
+                        totalBlue: sumArrayNumber(result.blue),
+                        totalRed: sumArrayNumber(result.red),
                     };
                 }
 

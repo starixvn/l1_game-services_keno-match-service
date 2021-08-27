@@ -25,13 +25,13 @@ export class RoundResultConsumer {
     async generateFirstHalfResult() {
         const resultFromAdmin = this.gameData.settlementResultFromAdmin;
 
-        const firstHalfResult =
+        const result =
             this.gameData.roundId === resultFromAdmin.roundId
                 ? resultFromAdmin.result.firstHalf.result
                 : { blue: this.definition.generateResult(), red: this.definition.generateResult() };
 
-        const totalBlue = sumArrayNumber(firstHalfResult.blue);
-        const totalRed = sumArrayNumber(firstHalfResult.red);
+        const totalBlue = sumArrayNumber(result.blue);
+        const totalRed = sumArrayNumber(result.red);
         const sum = totalBlue + totalRed;
         const settlementResult = this.definition.settle({ totalBlue, totalRed }, true);
 
@@ -45,17 +45,17 @@ export class RoundResultConsumer {
         await this.roundsRepository.create({
             id: this.gameData.roundId,
             odds,
-            firstHalf: { result: firstHalfResult, sum, settlementResult, resultKey, md5, time: new Date() },
+            firstHalf: { result, sum, settlementResult, resultKey, md5, time: new Date() },
         });
 
-        this.gameData.firstHalfResult = { ...firstHalfResult, settlementResult, totalRed, totalBlue, resultKey };
+        this.gameData.firstHalfResult = { result, settlementResult, totalRed, totalBlue, resultKey };
         this.roundResultPublisher.publishMD5(md5);
     }
 
     async handleFinishFistHalf() {
         const { roundId, firstHalfResult, liveOdds } = this.gameData;
 
-        const fullTimeResult = this.generateFullTimeResult();
+        const fullTimeResult = this.generateFullTimeResult(firstHalfResult.result);
         const totalBlue = sumArrayNumber(fullTimeResult.blue) + firstHalfResult.totalBlue;
         const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalRed;
         const sum = totalBlue + totalRed;
@@ -84,9 +84,8 @@ export class RoundResultConsumer {
         this.roundResultPublisher.publishMD5(md5);
     }
 
-    generateFullTimeResult() {
+    generateFullTimeResult(firstHalfResult) {
         const resultFromAdmin = this.gameData.settlementResultFromAdmin;
-        const firstHalfResult = this.gameData.firstHalfResult;
 
         return this.gameData.roundId === resultFromAdmin.roundId
             ? resultFromAdmin.result.fullTime.result
