@@ -48,13 +48,13 @@ export class RoundResultConsumer {
             firstHalf: { result: firstHalfResult, sum, settlementResult, resultKey, md5, time: new Date() },
         });
 
-        this.gameData.firstHalfResult = { ...firstHalfResult, totalRed, totalBlue, resultKey };
+        this.gameData.firstHalfResult = { ...firstHalfResult, settlementResult, totalRed, totalBlue, resultKey };
         this.roundResultPublisher.publishMD5(md5);
     }
 
     async handleFinishFistHalf() {
-        const firstHalfResult = this.gameData.firstHalfResult;
-        this.roundResultPublisher.publishFirstHalfResult(firstHalfResult);
+        const { roundId, firstHalfResult, liveOdds } = this.gameData;
+
         const fullTimeResult = this.generateFullTimeResult();
         const totalBlue = sumArrayNumber(fullTimeResult.blue) + firstHalfResult.totalBlue;
         const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalRed;
@@ -74,11 +74,13 @@ export class RoundResultConsumer {
         };
         await this.roundsRepository.updateOne(
             {
-                id: this.gameData.roundId,
+                id: roundId,
             },
             update
         );
 
+        this.roundResultPublisher.publishFirstHalfResult(firstHalfResult);
+        this.roundResultPublisher.publishToAllUsers({ liveOdds });
         this.roundResultPublisher.publishMD5(md5);
     }
 
