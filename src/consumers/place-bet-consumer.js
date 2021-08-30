@@ -1,4 +1,4 @@
-import { helpers } from "sc-common";
+import { helpers, logger } from "sc-common";
 import { Core } from "sc-game-base";
 
 import { liveChoices, preLiveChoices } from "../constants";
@@ -33,6 +33,7 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
 
     composeBetChoiceValidationCriteria(betChoice) {
         const baseCriteria = super.composeBetChoiceValidationCriteria(betChoice);
+        logger.log(baseCriteria);
 
         const criteria = [
             {
@@ -50,6 +51,8 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
                 notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
             },
         ];
+
+        logger.log(criteria);
 
         return baseCriteria.concat(criteria);
     }
