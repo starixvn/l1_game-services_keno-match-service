@@ -1,10 +1,6 @@
 import { Core } from "sc-game-base";
 
 export class AdminMonitorConsumer extends Core.BaseEventConsumers.AdminMonitorConsumer {
-    constructor(definition, gameData, adminPublisher, roundsRepository) {
-        super(definition, gameData, adminPublisher, roundsRepository);
-    }
-
     /**
      * @param {Socket} socketClient
      */
