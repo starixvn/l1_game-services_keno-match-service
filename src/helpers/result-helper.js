@@ -1,7 +1,7 @@
 const fullTimeRuleEntries = Object.entries({
     blue: ({ totalBlue, totalRed }) => totalBlue > totalRed,
     red: ({ totalBlue, totalRed }) => totalBlue < totalRed,
-    draw: ({ totalBlue, totalRed }) => totalBlue === totalRed,
+    tie: ({ totalBlue, totalRed }) => totalBlue === totalRed,
     over: ({ totalBlue, totalRed }) => totalBlue + totalRed >= 1621,
     under: ({ totalBlue, totalRed }) => totalBlue + totalRed < 1621,
     odd: ({ totalBlue, totalRed }) => (totalBlue + totalRed) % 2 === 1,
@@ -11,7 +11,7 @@ const fullTimeRuleEntries = Object.entries({
 const firstHalfRuleEntries = Object.entries({
     blue: ({ totalBlue, totalRed }) => totalBlue > totalRed,
     red: ({ totalBlue, totalRed }) => totalBlue < totalRed,
-    draw: ({ totalBlue, totalRed }) => totalBlue === totalRed,
+    tie: ({ totalBlue, totalRed }) => totalBlue === totalRed,
     over: ({ totalBlue, totalRed }) => totalBlue + totalRed >= 811,
     under: ({ totalBlue, totalRed }) => totalBlue + totalRed < 811,
     odd: ({ totalBlue, totalRed }) => (totalBlue + totalRed) % 2 === 1,
