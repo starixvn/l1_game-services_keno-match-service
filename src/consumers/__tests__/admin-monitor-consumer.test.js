@@ -22,7 +22,7 @@ describe("Admin monitor consumer instance", () => {
     };
 
     it("should extends Core AdminMonitorConsumer", () => {
-        expect(consumer instanceof Core.BaseEventConsumers.AdminMonitorConsumer);
+        expect(consumer instanceof Core.BaseEventConsumers.AdminMonitorConsumer).toBeTruthy();
     });
 
     describe("consume", () => {

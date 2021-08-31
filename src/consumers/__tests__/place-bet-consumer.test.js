@@ -36,7 +36,7 @@ describe("Place Bet consumer instance", () => {
 
     it("should extends Core PlaceBetConsumer", () => {
         // assert
-        expect(consumer instanceof Core.BaseEventConsumers.PlaceBetConsumer);
+        expect(consumer instanceof Core.BaseEventConsumers.PlaceBetConsumer).toBeTruthy();
     });
 
     describe("composeBettingTimeValidationCriteria tests", () => {
