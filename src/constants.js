@@ -35,27 +35,21 @@ export const preLiveChoices = [
 ];
 
 export const firstHalfChoiceMapper = {
-    fhBlue: "blue",
-    fhRed: "red",
-    fhOver: "over",
-    fhUnder: "under",
-    fhOdd: "odd",
-    fhEven: "even",
+    blue: ["fhBlue"],
+    red: ["fhRed"],
+    over: ["fhOver"],
+    under: ["fhUnder"],
+    odd: ["fhOdd"],
+    even: ["fhEven"],
 };
 
 export const fullTimeChoiceMapper = {
-    ftBlue: "blue",
-    ftRed: "red",
-    ftOver: "over",
-    ftUnder: "under",
-    ftOdd: "odd",
-    ftEven: "even",
-    liveFTBlue: "blue",
-    liveFTRed: "red",
-    liveFTOver: "over",
-    liveFTUnder: "under",
-    liveFTOdd: "odd",
-    liveFTEven: "even",
+    blue: ["ftBlue", "liveFTBlue"],
+    red: ["ftRed", "liveFTRed"],
+    over: ["ftOver", "liveFTOver"],
+    under: ["ftUnder", "liveFTUnder"],
+    odd: ["ftOver", "liveFTOdd"],
+    even: ["ftEven", "liveFTEven"],
 };
 
 export const liveChoices = ["liveFTBlue", "liveFTRed", "liveFTOver", "liveFTUnder", "liveFTOdd", "liveFTEven"];

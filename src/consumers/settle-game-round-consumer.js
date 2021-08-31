@@ -52,23 +52,25 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
     calculateBetResult(settlementResult, bet, odds, isFirstHalf) {
         const betResult = Object.entries(settlementResult).reduce(
             (result, [choice, win]) => {
-                if (!this.isTie(choice)) {
-                    const specificChoice = this.getSpecificChoice(choice, isFirstHalf);
-                    const betAmount = bet[specificChoice] ?? 0;
-                    const originalOdds = odds[choice] || 1;
-                    const winAmount = win ? betAmount * originalOdds : 0;
-                    const refund = this.isBLueOrRed(specificChoice) && settlementResult.tie ? betAmount : 0;
+                const specificChoices = this.getSpecificChoices(choice, isFirstHalf);
 
-                    result.totalBetAmount += betAmount;
-                    result.totalWin += winAmount;
-                    result.winningByChoices[choice] = winAmount;
-                    result.refund += refund;
+                if (specificChoices && specificChoices.length) {
+                    specificChoices.forEach((specificChoice) => {
+                        const betAmount = bet[specificChoice] ?? 0;
+                        const originalOdds = odds[specificChoice] || 1;
+                        const winAmount = win ? betAmount * originalOdds : 0;
+                        const refund = this.isBLueOrRed(specificChoice) && settlementResult.tie ? betAmount : 0;
 
-                    if (winAmount > 0) {
-                        result.netWin += winAmount - betAmount;
-                    } else {
-                        result.totalLost += betAmount;
-                    }
+                        result.totalBetAmount += betAmount;
+                        result.totalWin += winAmount;
+                        result.winningByChoices[specificChoice] = winAmount;
+                        result.refund += refund;
+                        if (winAmount > 0) {
+                            result.netWin += winAmount - betAmount;
+                        } else {
+                            result.totalLost += betAmount;
+                        }
+                    });
                 }
 
                 return result;
@@ -89,7 +91,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
         return betResult;
     }
 
-    getSpecificChoice(choice, isFirstHalf) {
+    getSpecificChoices(choice, isFirstHalf) {
         const choiceMapper = isFirstHalf ? firstHalfChoiceMapper : fullTimeChoiceMapper;
 
         return choiceMapper[choice];

@@ -31,8 +31,6 @@ describe("Round result consumer instance", () => {
     /** @type {mongoose.Model}*/
     const roundsRepository = stubMongooseModelStupidly(mongoose.Model);
 
-    console.log(roundsRepository);
-
     /** @type {RoundResultPublisher}*/
     const roundResultPublisher = stub(RoundResultPublisher);
 

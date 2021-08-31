@@ -22,8 +22,8 @@ export default [
         defaultBetTracks: {},
         repositories: {
             roundsRepository: getRoundRepository("kenomatch1_phien"),
-            betsRepository: getBetRepository("kenomatch1_cuoc"),
-            betLogsRepository: getBetLogsRepository("kenomatch1_log"),
+            betsRepository: getBetRepository("kenomatch1_one"),
+            betLogsRepository: getBetLogsRepository("kenomatch1_cuoc"),
         },
         generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
         settle: getSettlementResult,
@@ -44,8 +44,8 @@ export default [
         defaultBetTracks: {},
         repositories: {
             roundsRepository: getRoundRepository("kenomatch2_phien"),
-            betsRepository: getBetRepository("kenomatch2_cuoc"),
-            betLogsRepository: getBetLogsRepository("kenomatch2_log"),
+            betsRepository: getBetRepository("kenomatch2_one"),
+            betLogsRepository: getBetLogsRepository("kenomatch2_cuoc"),
         },
         generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
         settle: getSettlementResult,

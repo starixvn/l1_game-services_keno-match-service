@@ -93,4 +93,55 @@ describe("settle game round consumer instance", () => {
             expect(round.settled).toBeTruthy();
         });
     });
+
+    describe("settleBets tests_", () => {
+        it("always_calls queryBets and publishRoundResult", async () => {
+            // arrange
+            const round = { id: 1, fullTime: {}, firstHalf: {}, odds: {} };
+            spyOn(consumer, "queryBets");
+
+            // act
+            await consumer.settleBets(round);
+
+            // assert
+            expect(consumer.queryBets).toHaveBeenCalled();
+            expect(roundResultPublisher.publishRoundResult).toHaveBeenCalled();
+        });
+
+        it("existing bets_should settle bet and call end game", async () => {
+            const round = {
+                id: 1,
+
+                fullTime: { settlementResult: { blue: true, red: false, tie: false, over: true, under: false, odd: false, even: true } },
+                firstHalf: { settlementResult: { blue: true, red: false, tie: false, over: true, under: false, odd: false, even: true } },
+                odds: {
+                    fhBlue: 1.96,
+                    fhRed: 1.96,
+                    fhOver: 1.96,
+                    fhUnder: 1.96,
+                    fhOdd: 1.96,
+                    fhEven: 1.96,
+                    ftBlue: 1.96,
+                    ftRed: 1.96,
+                    ftOver: 1.96,
+                    ftUnder: 1.96,
+                    ftOdd: 1.96,
+                    ftEven: 1.96,
+                    liveFTBlue: 4.1,
+                    liveFTRed: 1.33,
+                    liveFTOver: 2.21,
+                    liveFTUnder: 1.83,
+                },
+            };
+            spyOn(consumer, "queryBets").and.callFake(() => [{ uid: 1, name: "aaaa", phien: 1, fhBlue: 100, save: jest.fn() }]);
+            spyOn(consumer, "callEndGame");
+
+            // act
+            await consumer.settleBets(round);
+
+            // assert
+            expect(consumer.queryBets).toHaveBeenCalled();
+            expect(roundResultPublisher.publishRoundResult).toHaveBeenCalled();
+        });
+    });
 });
