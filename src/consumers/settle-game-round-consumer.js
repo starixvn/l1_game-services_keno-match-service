@@ -100,8 +100,4 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
     isBLueOrRed(choice) {
         return ["blue", "red"].includes(choice);
     }
-
-    isTie(choice) {
-        return choice === "tie";
-    }
 }
