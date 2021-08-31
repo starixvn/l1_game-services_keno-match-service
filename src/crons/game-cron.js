@@ -1,5 +1,4 @@
 import cron from "cron";
-import mongoose from "mongoose";
 import { Core } from "sc-game-base";
 
 import { RoundResultConsumer } from "../consumers";
@@ -8,7 +7,6 @@ import { sumArrayNumber } from "../helpers/array-helper";
 export class GameCron extends Core.Crons.BaseGameCron {
     /**
      * @param {Object} dependencies
-     * @param {mongoose.Model} dependencies.globalConfigsRepository
      * @param {RoundResultConsumer} dependencies.roundResultConsumer
      */
     constructor({
