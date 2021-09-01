@@ -65,7 +65,7 @@ describe("game cron instance", () => {
     /** @type {mongoose.Model}*/
     const notificationRepository = stubMongooseModelStupidly(mongoose.Model);
 
-    /** @type {Core.BaseEventPublishers.GameStatusPublisher}*/
+    /** @type {RoundResultConsumer}*/
     const roundResultConsumer = stub(RoundResultConsumer);
 
     const gameCron = new GameCron({
@@ -89,46 +89,155 @@ describe("game cron instance", () => {
 
     describe("proceed tests", () => {
         it("should call checkGameStatus after each round", async () => {
+            // arrange
             gameData.disabled = false;
             gameData.remainingTime = definition.durations.wholeRound;
-
             gameCron.checkGameStatus = jest.fn();
 
+            // act
             await gameCron.proceed();
 
+            // assert
             expect(gameCron.checkGameStatus).toHaveBeenCalled();
         });
 
-        // it("should call resetForNewRound and reset bot at starting round", async () => {
-        //     gameData.disabled = false;
-        //     gameData.remainingTime = definition.durations.firstHalfPlacingBets;
+        it("should call resetForNewRound and generate first half at starting round", async () => {
+            // arrange
+            gameData.disabled = false;
+            gameData.remainingTime = definition.durations.firstHalfPlacingBets + 1;
 
-        //     jest.spyOn(gameCron, "resetForNewRound");
+            jest.spyOn(gameCron, "resetForNewRound");
 
-        //     await gameCron.proceed();
+            // act
+            await gameCron.proceed();
 
-        //     expect(gameCron.resetForNewRound).toHaveBeenCalled();
-        // });
+            // assert
+            expect(gameCron.resetForNewRound).toHaveBeenCalled();
+            expect(roundResultConsumer.generateFirstHalfResult).toHaveBeenCalled();
+        });
 
-        // it("should call settleRound when remainingTime is less than 0", async () => {
-        //     gameData.disabled = false;
-        //     gameData.remainingTime = 0;
+        it("should call handleFinishFistHalf at finish half time", async () => {
+            // arrange
+            gameData.disabled = false;
+            gameData.remainingTime = definition.durations.finishFirstHalf + 1;
 
-        //     await gameCron.proceed();
+            // act
+            await gameCron.proceed();
 
-        //     expect(gameData.remainingTime).toEqual(definition.durations.wholeRound);
-        //     expect(settleGameRoundConsumer.settleRound).toHaveBeenCalledWith(gameData);
-        // });
+            // assert
+            expect(roundResultConsumer.handleFinishFistHalf).toHaveBeenCalled();
+        });
 
-        it("should call bot.run and runningRoundInfoPublisher.publish when remainting time is in placing bet time", async () => {
+        it("should call settleRound when remainingTime is less than 0", async () => {
+            // arrange
+            gameData.disabled = false;
+            gameData.remainingTime = 0;
+
+            // act
+            await gameCron.proceed();
+
+            // assert
+            expect(gameData.remainingTime).toEqual(definition.durations.wholeRound);
+            expect(settleGameRoundConsumer.settleRound).toHaveBeenCalled();
+        });
+
+        it("should call runningRoundInfoPublisher.publish when remaining time is in placing bet time", async () => {
+            // arrange
             gameData.disabled = false;
             gameData.remainingTime = definition.durations.placingBets;
 
             gameCron.checkGameStatus = jest.fn();
 
+            // act
             await gameCron.proceed();
 
+            // assert
             expect(runningRoundInfoPublisher.publish).toHaveBeenCalled();
+        });
+    });
+
+    describe("start tests", () => {
+        it("should call getLastArchiveRound when last round doesn't exist", async () => {
+            // arrange
+            roundsRepository.findOne().lean().exec.mockReturnValueOnce(null);
+            spyOn(gameCron, "getLastArchiveRound");
+
+            // act
+            await gameCron.start();
+
+            // arrange
+            expect(gameCron.getLastArchiveRound).toHaveBeenCalled();
+        });
+
+        it("should increase round id when last round was settled", async () => {
+            // arrange
+            roundsRepository.findOne().lean().exec.mockReturnValueOnce({ id: 1, settled: true });
+
+            // act
+            await gameCron.start();
+
+            // arrange
+            expect(gameData.roundId).toStrictEqual(2);
+        });
+
+        describe("when last round is running", () => {
+            it("should call checkGameStatus", async () => {
+                roundsRepository
+                    .findOne()
+                    .lean()
+                    .exec.mockReturnValueOnce({
+                        id: 1,
+                        settled: false,
+                        firstHalf: { result: { blue: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] } },
+                        fullTime: { result: { blue: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] } },
+                    });
+
+                spyOn(gameCron, "checkGameStatus");
+
+                // act
+                await gameCron.start();
+
+                // arrange
+                expect(gameData.roundId).toStrictEqual(1);
+                expect(gameCron.checkGameStatus).toHaveBeenCalled();
+            });
+
+            it("should update remaining time to zero when fulltime result was generated", async () => {
+                // arrange
+                roundsRepository
+                    .findOne()
+                    .lean()
+                    .exec.mockReturnValueOnce({
+                        id: 1,
+                        settled: false,
+                        firstHalf: { result: { blue: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] } },
+                        fullTime: { result: { blue: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] } },
+                    });
+
+                // act
+                await gameCron.start();
+
+                // arrange
+                expect(gameData.remainingTime).toStrictEqual(0);
+            });
+
+            it("should update remaining time to firstHalfPlacingBets when first half not yet finished", async () => {
+                // arrange
+                roundsRepository
+                    .findOne()
+                    .lean()
+                    .exec.mockReturnValueOnce({
+                        id: 1,
+                        settled: false,
+                        firstHalf: { result: { blue: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] } },
+                    });
+
+                // act
+                await gameCron.start();
+
+                // arrange
+                expect(gameData.remainingTime).toStrictEqual(definition.durations.firstHalfPlacingBets);
+            });
         });
     });
 });
