@@ -53,4 +53,24 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
 
         return baseCriteria.concat(criteria);
     }
+
+    composeBetAmountValidationCriteria(player, betChoice, amount, freeBet) {
+        const baseCriteria = super.composeBetAmountValidationCriteria(player, betChoice, amount, freeBet);
+
+        if (liveChoices.includes(betChoice)) {
+            const { betTracks } = this.gameData.ingame[player.profile.name] || { betTracks: {} };
+            const { gameConfigs, liveOdds } = this.gameData;
+            const maxBetForChoice = gameConfigs.maxbet / (liveOdds[betChoice] - 1);
+            const criteria = [
+                {
+                    failure: amount > maxBetForChoice || betTracks[betChoice] + amount > maxBetForChoice,
+                    notice: this.getNoticeObj(helpers.noticeHelper.maxBetForChoice, { maxBet: maxBetForChoice }),
+                },
+            ];
+
+            return baseCriteria.concat(criteria);
+        }
+
+        return baseCriteria;
+    }
 }
