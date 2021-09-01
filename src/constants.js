@@ -48,7 +48,7 @@ export const fullTimeChoiceMapper = {
     red: ["ftRed", "liveFTRed"],
     over: ["ftOver", "liveFTOver"],
     under: ["ftUnder", "liveFTUnder"],
-    odd: ["ftOver", "liveFTOdd"],
+    odd: ["ftOdd", "liveFTOdd"],
     even: ["ftEven", "liveFTEven"],
 };
 
