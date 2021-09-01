@@ -6,7 +6,7 @@ const schema = new mongoose.Schema({
     phien: { type: Number, required: true },
     time: { type: Date },
 
-    choice: { type: Number, required: true },
+    choice: { type: String, required: true },
     amount: { type: Number, required: true },
 
     memberId: { type: Number },
