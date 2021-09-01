@@ -23,6 +23,8 @@ const schema = new mongoose.Schema({
     liveFTRed: { type: Number, default: 0 },
     liveFTOver: { type: Number, default: 0 },
     liveFTUnder: { type: Number, default: 0 },
+    liveFTEven: { type: Number, default: 0 },
+    liveFTOdd: { type: Number, default: 0 },
 
     thanhtoan: { type: Boolean, default: false },
     betwin: { type: Number, default: 0 },
@@ -31,7 +33,7 @@ const schema = new mongoose.Schema({
 
     memberId: { type: Number },
     siteId: { type: String },
-    freeBet: { type: Boolean, default: false },
+    freeBet: { type: Boolean, default: false }
 });
 
 export default (modelName) => {
