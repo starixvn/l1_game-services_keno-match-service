@@ -15,8 +15,6 @@ export const choices = [
     "liveFTRed",
     "liveFTOver",
     "liveFTUnder",
-    "liveFTOdd",
-    "liveFTEven",
 ];
 
 export const preLiveChoices = [
@@ -48,11 +46,11 @@ export const fullTimeChoiceMapper = {
     red: ["ftRed", "liveFTRed"],
     over: ["ftOver", "liveFTOver"],
     under: ["ftUnder", "liveFTUnder"],
-    odd: ["ftOver", "liveFTOdd"],
-    even: ["ftEven", "liveFTEven"],
+    odd: ["ftOver"],
+    even: ["ftEven"],
 };
 
-export const liveChoices = ["liveFTBlue", "liveFTRed", "liveFTOver", "liveFTUnder", "liveFTOdd", "liveFTEven"];
+export const liveChoices = ["liveFTBlue", "liveFTRed", "liveFTOver", "liveFTUnder"];
 
 export const choicesMapper = {
     fhBlue: 1,
@@ -71,6 +69,4 @@ export const choicesMapper = {
     liveFTRed: 14,
     liveFTOver: 15,
     liveFTUnder: 16,
-    liveFTOdd: 17,
-    liveFTEven: 18,
 };
