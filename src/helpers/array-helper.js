@@ -1,10 +1,6 @@
 export const sumArrayNumber = (array) => {
-    return array.reduce(getSum, 0);
+    return array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 };
-
-function getSum(total, number) {
-    return total + number;
-}
 
 export const sumArrayObject = (objects) => {
     return objects.reduce((a, b) => {
