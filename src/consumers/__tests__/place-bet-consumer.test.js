@@ -25,9 +25,17 @@ describe("Place Bet consumer instance", () => {
     };
     const gameData = new GameData(0);
     gameData.roundId = 1;
-    gameData.gameConfigs = {};
+    gameData.gameConfigs = { maxbet: 2000 };
     const baseEventPublisher = stub(Core.BaseEventPublishers.BaseEventPublisher);
     const consumer = new PlaceBetConsumer(definition, gameData, baseEventPublisher);
+    const realPlayer = {
+        socketClient: {
+            emit: jest.fn(),
+        },
+        profile: {
+            name: "player01",
+        },
+    };
 
     beforeAll(() => {
         // arrange
@@ -43,7 +51,7 @@ describe("Place Bet consumer instance", () => {
         beforeEach(() => {
             gameData.remainingTime = 0;
             gameData.roundId = 1;
-            gameData.gameConfigs = { enabled: true };
+            gameData.gameConfigs = { enabled: true, maxbet: 2000 };
         });
 
         it("should return invalidBet notice when game was disabled", () => {
@@ -143,6 +151,47 @@ describe("Place Bet consumer instance", () => {
                     notice: { errorCode: helpers.noticeHelper.invalidBet },
                 });
             });
+        });
+    });
+
+    describe("composeBetAmountValidationCriteria tests", () => {
+        const baseCriteria = [
+            {
+                failure: false,
+                notice: { errorCode: "SB1234" },
+            },
+        ];
+        beforeEach(() => {
+            // arrange
+            spyOn(Core.BaseEventConsumers.PlaceBetConsumer.prototype, "composeBetAmountValidationCriteria").and.callFake(
+                () => baseCriteria
+            );
+        });
+
+        it("should return baseCriteria when betChoice is preLive", () => {
+            // act
+            const actualResult = consumer.composeBetAmountValidationCriteria(realPlayer, "fhBlue", 100, false);
+
+            // assert
+            expect(actualResult).toStrictEqual(baseCriteria);
+        });
+
+        it("should return correct result when betChoice is live", () => {
+            // arrange
+            gameData.liveOdds = { liveFTBlue: 4.2 };
+            const expectedResult = [
+                {
+                    failure: false,
+                    notice: { errorCode: "SB1234" },
+                },
+                { failure: false, notice: { errorCode: helpers.noticeHelper.maxBetForChoice, maxBet: 625 } },
+            ];
+            // act
+            const actualResult = consumer.composeBetAmountValidationCriteria(realPlayer, "liveFTBlue", 100, false);
+
+
+            // assert
+            expect(actualResult).toStrictEqual(expectedResult);
         });
     });
 });

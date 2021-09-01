@@ -61,6 +61,7 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
             const { betTracks } = this.gameData.ingame[player.profile.name] || { betTracks: {} };
             const { gameConfigs, liveOdds } = this.gameData;
             const maxBetForChoice = gameConfigs.maxbet / (liveOdds[betChoice] - 1);
+
             const criteria = [
                 {
                     failure: amount > maxBetForChoice || betTracks[betChoice] + amount > maxBetForChoice,
