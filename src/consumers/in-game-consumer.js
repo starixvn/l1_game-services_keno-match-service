@@ -4,6 +4,11 @@ export class InGameConsumer extends Core.BaseEventConsumers.InGameConsumer {
     async buildPayload(realPlayer) {
         const basePayload = await super.buildPayload(realPlayer);
 
-        return { ...basePayload, firstHalfResult: this.gameData.firstHalfResult };
+        if (this.gameData.remainingTime > this.definition.durations.finishFirstHalf) {
+            return basePayload;
+        }
+
+        const { firstHalfResult, liveOdds } = this.gameData;
+        return { ...basePayload, firstHalfResult, liveOdds };
     }
 }
