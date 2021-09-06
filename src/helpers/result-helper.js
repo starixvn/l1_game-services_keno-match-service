@@ -1,3 +1,5 @@
+import shuffleNumbers from "./shuffleNumbers";
+
 const fullTimeRuleEntries = Object.entries({
     blue: ({ totalBlue, totalRed }) => totalBlue > totalRed,
     red: ({ totalBlue, totalRed }) => totalBlue < totalRed,
@@ -27,3 +29,5 @@ export const getSettlementResult = (totalPoints, isFirstHalf) => {
         return result;
     }, {});
 };
+
+export const generateResult = (excludeNumbers) => shuffleNumbers(10, 80, excludeNumbers);

@@ -1,6 +1,5 @@
 import { choices, choicesMapper } from "./constants";
-import { getSettlementResult } from "./helpers/result-helper";
-import generateResult from "./helpers/shuffleNumbers";
+import { generateResult, getSettlementResult } from "./helpers/result-helper";
 import getBetLogsRepository from "./models/bet-logs";
 import getBetRepository from "./models/bets";
 import getRoundRepository from "./models/rounds";
@@ -25,7 +24,7 @@ export default [
             betsRepository: getBetRepository("kenomatch1_one"),
             betLogsRepository: getBetLogsRepository("kenomatch1_cuoc"),
         },
-        generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
+        generateResult,
         settle: getSettlementResult,
     },
     {
@@ -47,7 +46,7 @@ export default [
             betsRepository: getBetRepository("kenomatch2_one"),
             betLogsRepository: getBetLogsRepository("kenomatch2_cuoc"),
         },
-        generateResult: (excludeNumbers) => generateResult(10, 80, excludeNumbers),
+        generateResult,
         settle: getSettlementResult,
     },
 ];
