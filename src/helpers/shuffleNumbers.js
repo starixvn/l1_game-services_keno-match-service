@@ -29,5 +29,8 @@ const algorithms = [shuffleThenPickByChance, shuffleThenPickByRandomJs, randomly
 
 export default (numberOfPicked, numberOfSeeds, excludeNumbers) => {
     const randomSelection = chance.natural({ min: 0, max: algorithms.length - 1 });
-    return algorithms[randomSelection](numberOfPicked, numberOfSeeds, excludeNumbers);
+    const result = algorithms[randomSelection](numberOfPicked, numberOfSeeds, excludeNumbers);
+    result.sort((pre, next) => pre - next);
+
+    return result;
 };

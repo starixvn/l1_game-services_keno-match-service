@@ -48,21 +48,31 @@ export class RoundResultConsumer {
             firstHalf: { result, sum, settlementResult, resultKey, md5, time: new Date() },
         });
 
+        this.gameData.currentMD5 = md5;
         this.gameData.firstHalfResult = { result, settlementResult, totalRed, totalBlue, resultKey };
         this.roundResultPublisher.publishMD5(md5);
     }
 
-    async handleFinishFistHalf() {
-        const { roundId, firstHalfResult, liveOdds } = this.gameData;
+    handleFinishFistHalf() {
+        const { firstHalfResult, liveOdds } = this.gameData;
+        this.roundResultPublisher.publishFirstHalfResult(firstHalfResult);
+        this.roundResultPublisher.publishToAllUsers({ liveOdds });
+    }
 
-        const fullTimeResult = this.generateFullTimeResult(firstHalfResult.result);
+    async generateFullTimeResult() {
+        const { roundId, firstHalfResult, settlementResultFromAdmin: resultFromAdmin } = this.gameData;
+        const fullTimeResult =
+            roundId === resultFromAdmin.roundId
+                ? resultFromAdmin.result.fullTime.result
+                : { blue: this.definition.generateResult(firstHalfResult.blue), red: this.definition.generateResult(firstHalfResult.red) };
+
         const totalBlue = sumArrayNumber(fullTimeResult.blue) + firstHalfResult.totalBlue;
         const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalRed;
         const sum = totalBlue + totalRed;
         const settlementResult = this.definition.settle({ totalBlue, totalRed }, false);
         const resultKey = `[${totalBlue};${totalRed}]${randomString()}`;
         const md5 = createHashMD5(resultKey);
-
+        this.gameData.currentMD5 = md5;
         const update = {
             fullTime: {
                 result: fullTimeResult,
@@ -80,16 +90,6 @@ export class RoundResultConsumer {
             update
         );
 
-        this.roundResultPublisher.publishFirstHalfResult(firstHalfResult);
-        this.roundResultPublisher.publishToAllUsers({ liveOdds });
         this.roundResultPublisher.publishMD5(md5);
-    }
-
-    generateFullTimeResult(firstHalfResult) {
-        const resultFromAdmin = this.gameData.settlementResultFromAdmin;
-
-        return this.gameData.roundId === resultFromAdmin.roundId
-            ? resultFromAdmin.result.fullTime.result
-            : { blue: this.definition.generateResult(firstHalfResult.blue), red: this.definition.generateResult(firstHalfResult.red) };
     }
 }

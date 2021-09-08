@@ -128,6 +128,18 @@ describe("game cron instance", () => {
             expect(roundResultConsumer.handleFinishFistHalf).toHaveBeenCalled();
         });
 
+        it("should call generate fulltime result at placing bet time", async () => {
+            // arrange
+            gameData.disabled = false;
+            gameData.remainingTime = definition.durations.placingBets + 1;
+
+            // act
+            await gameCron.proceed();
+
+            // assert
+            expect(roundResultConsumer.generateFullTimeResult).toHaveBeenCalled();
+        });
+
         it("should call settleRound when remainingTime is less than 0", async () => {
             // arrange
             gameData.disabled = false;

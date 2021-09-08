@@ -6,5 +6,6 @@ export class GameData extends Core.GameData {
 
         this.liveOdds = {};
         this.firstHalfResult = {};
+        this.currentMD5 = "";
     }
 }

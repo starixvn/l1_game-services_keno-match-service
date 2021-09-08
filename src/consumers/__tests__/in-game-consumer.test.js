@@ -59,25 +59,45 @@ describe("in game consumer instance", () => {
             expect(Core.BaseEventConsumers.InGameConsumer.prototype.buildPayload).toHaveBeenCalled();
         });
 
-        it("should return basePayload when remaining time greater than finish first half", async () => {
+        it("should return correct result when remaining time less than or equal finish first half", async () => {
             // arrange
-            gameData.remainingTime = definition.durations.finishFirstHalf + 1;
+            const liveOdds = { liveFTBlue: 2.1, liveFTRed: 1.5 };
+            const firstHalfResult = {
+                result: { blue: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+                settlementResult: {},
+                resultKey: "resultKey",
+            };
+            gameData.remainingTime = definition.durations.finishFirstHalf - 1;
+            gameData.liveOdds = liveOdds;
+            gameData.firstHalfResult = firstHalfResult;
+            gameData.currentMD5 = "md5hash";
+            const expectedResult = { ...basePayload, firstHalfResult, liveOdds, md5: "md5hash" };
 
             // act
             const actualResult = await consumer.buildPayload(realPlayer);
 
             // assert
-            expect(actualResult).toStrictEqual(basePayload);
+            expect(actualResult).toStrictEqual(expectedResult);
         });
 
-        it("should return correct result when remaining time less than finish first half", async () => {
+        it("should return correct result when remaining time greater than finish first half", async () => {
             // arrange
             const liveOdds = { liveFTBlue: 2.1, liveFTRed: 1.5 };
-            const firstHalfResult = { result: { blue: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] } };
-            gameData.remainingTime = definition.durations.finishFirstHalf;
+            const firstHalfResult = {
+                result: { blue: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+                settlementResult: {},
+                resultKey: "resultKey",
+            };
+            gameData.remainingTime = definition.durations.firstHalfLockingBet;
             gameData.liveOdds = liveOdds;
             gameData.firstHalfResult = firstHalfResult;
-            const expectedResult = { ...basePayload, firstHalfResult, liveOdds };
+            gameData.currentMD5 = "md5hash";
+            const expectedResult = {
+                ...basePayload,
+                firstHalfResult: { result: firstHalfResult.result, settlementResult: firstHalfResult.settlementResult },
+                liveOdds,
+                md5: "md5hash",
+            };
 
             // act
             const actualResult = await consumer.buildPayload(realPlayer);

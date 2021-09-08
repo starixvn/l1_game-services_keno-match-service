@@ -66,12 +66,15 @@ export class GameCron extends Core.Crons.BaseGameCron {
                     this.gameData.remainingTime = 0;
                 } else {
                     this.gameData.remainingTime = this.definition.durations.firstHalfPlacingBets;
-                    const { result } = lastRound.firstHalf;
+                    const { result, settlementResult, resultKey, md5 } = lastRound.firstHalf;
                     this.gameData.firstHalfResult = {
                         result,
+                        resultKey,
+                        settlementResult,
                         totalBlue: sumArrayNumber(result.blue),
                         totalRed: sumArrayNumber(result.red),
                     };
+                    this.gameData.currentMD5 = md5;
                 }
 
                 await this.checkGameStatus();
@@ -100,7 +103,11 @@ export class GameCron extends Core.Crons.BaseGameCron {
         }
 
         if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.finishFirstHalf) {
-            await this.roundResultConsumer.handleFinishFistHalf();
+            this.roundResultConsumer.handleFinishFistHalf();
+        }
+
+        if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.placingBets) {
+            await this.roundResultConsumer.generateFullTimeResult();
         }
 
         if (this.gameData.remainingTime < 0) {
