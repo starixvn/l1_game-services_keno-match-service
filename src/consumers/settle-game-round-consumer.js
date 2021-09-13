@@ -19,18 +19,24 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
     async settleBets(round) {
         const { id: roundId, fullTime, firstHalf, odds } = round;
         const bets = await this.queryBets(roundId);
+        console.log(roundId);
 
         if (bets && bets.length) {
             await Promise.all(
                 bets.map(async (bet) => {
                     const firstHalfBetResult = this.calculateBetResult(firstHalf.settlementResult, bet, odds, true);
+                    console.log(firstHalfBetResult);
                     const fullTimeBetResult = this.calculateBetResult(fullTime.settlementResult, bet, odds, false);
+                    console.log(fullTimeBetResult);
                     const betResult = sumArrayObject([firstHalfBetResult, fullTimeBetResult]);
+                    console.log(betResult);
 
                     bet.betwin = betResult.totalWin;
                     bet.refund = betResult.refund;
                     bet.thanhtoan = true;
                     bet.odds = odds;
+
+                    console.log(bet);
 
                     await bet.save();
                     await this.callEndGame(bet, roundId, fullTime.time, betResult);

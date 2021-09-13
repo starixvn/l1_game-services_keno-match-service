@@ -112,8 +112,8 @@ describe("settle game round consumer instance", () => {
             const round = {
                 id: 1,
 
-                fullTime: { settlementResult: { blue: true, red: false, tie: false, over: true, under: false, odd: false, even: true } },
-                firstHalf: { settlementResult: { blue: true, red: false, tie: false, over: true, under: false, odd: false, even: true } },
+                fullTime: { settlementResult: { blue: false, red: true, tie: false, over: false, under: true, odd: true, even: false } },
+                firstHalf: { settlementResult: { blue: false, red: true, tie: false, over: false, under: true, odd: true, even: false } },
                 odds: {
                     fhBlue: 1.96,
                     fhRed: 1.96,
@@ -127,13 +127,40 @@ describe("settle game round consumer instance", () => {
                     ftUnder: 1.96,
                     ftOdd: 1.96,
                     ftEven: 1.96,
-                    liveFTBlue: 4.1,
-                    liveFTRed: 1.33,
-                    liveFTOver: 2.21,
-                    liveFTUnder: 1.83,
+                    liveFTOdd: 1.96,
+                    liveFTEven: 1.96,
+                    liveFTBlue: 2.03,
+                    liveFTRed: 1.99,
+                    liveFTOver: 2.64,
+                    liveFTUnder: 1.61,
                 },
             };
-            spyOn(consumer, "queryBets").and.callFake(() => [{ uid: 1, name: "aaaa", phien: 1, fhBlue: 100, save: jest.fn() }]);
+            spyOn(consumer, "queryBets").and.callFake(() => [
+                {
+                    uid: 1,
+                    name: "aaaa",
+                    phien: 1,
+                    fhBlue: 10,
+                    fhEven: 10,
+                    fhOdd: 10,
+                    fhOver: 10,
+                    fhRed: 10,
+                    fhUnder: 10,
+                    ftBlue: 0,
+                    ftEven: 0,
+                    ftOdd: 0,
+                    ftOver: 0,
+                    ftRed: 0,
+                    ftUnder: 0,
+                    liveFTBlue: 0,
+                    liveFTEven: 0,
+                    liveFTOdd: 0,
+                    liveFTOver: 0,
+                    liveFTRed: 0,
+                    liveFTUnder: 0,
+                    save: jest.fn(),
+                },
+            ]);
             spyOn(consumer, "callEndGame");
 
             // act
@@ -144,4 +171,69 @@ describe("settle game round consumer instance", () => {
             expect(roundResultPublisher.publishRoundResult).toHaveBeenCalled();
         });
     });
+
+    // it("calculateBetResult tests", () => {
+    //     const settlementResult = { blue: false, red: true, tie: false, over: false, under: true, odd: true, even: false };
+    //     const bet = {
+    //         fhBlue: 10,
+    //         fhEven: 10,
+    //         fhOdd: 10,
+    //         fhOver: 10,
+    //         fhRed: 10,
+    //         fhUnder: 10,
+    //         ftBlue: 0,
+    //         ftEven: 0,
+    //         ftOdd: 0,
+    //         ftOver: 0,
+    //         ftRed: 0,
+    //         ftUnder: 0,
+    //         liveFTBlue: 0,
+    //         liveFTEven: 0,
+    //         liveFTOdd: 0,
+    //         liveFTOver: 0,
+    //         liveFTRed: 0,
+    //         liveFTUnder: 0,
+    //     };
+    //     const odds = {
+    //         fhBlue: 1.96,
+    //         fhRed: 1.96,
+    //         fhOver: 1.96,
+    //         fhUnder: 1.96,
+    //         fhOdd: 1.96,
+    //         fhEven: 1.96,
+    //         ftBlue: 1.96,
+    //         ftRed: 1.96,
+    //         ftOver: 1.96,
+    //         ftUnder: 1.96,
+    //         ftOdd: 1.96,
+    //         ftEven: 1.96,
+    //         liveFTOdd: 1.96,
+    //         liveFTEven: 1.96,
+    //         liveFTBlue: 2.03,
+    //         liveFTRed: 1.99,
+    //         liveFTOver: 2.64,
+    //         liveFTUnder: 1.61,
+    //     };
+
+    //     const firstHalf = consumer.calculateBetResult(
+    //         { blue: false, red: true, tie: false, over: false, under: true, odd: true, even: false },
+    //         bet,
+    //         odds,
+    //         true
+    //     );
+
+    //     console.log(firstHalf);
+
+    //     const fullTime = consumer.calculateBetResult(
+    //         { blue: false, red: true, tie: false, over: false, under: true, odd: true, even: false },
+    //         bet,
+    //         odds,
+    //         false
+    //     );
+
+    //     console.log(fullTime);
+
+    //     const totalBetResult = sumArrayObject([firstHalf, fullTime]);
+    //     console.log(totalBetResult);
+    // });
 });
