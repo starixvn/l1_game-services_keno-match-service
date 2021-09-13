@@ -1,5 +1,6 @@
 import { stub, stubMongooseModelStupidly } from "jest-micro-auto-stub";
 import mongoose from "mongoose";
+import { logger } from "sc-common";
 import { Core } from "sc-game-base";
 
 import { choices, choicesMapper } from "../../constants";
@@ -37,6 +38,9 @@ describe("settle game round consumer instance", () => {
 
     const endGame = jest.fn();
 
+    /** @type {logger}*/
+    const logService = stub(logger);
+
     /** @type {mongoose.Model}*/
     const betsRepository = stubMongooseModelStupidly(mongoose.Model);
     const consumer = new SettleGameRoundConsumer({
@@ -47,6 +51,7 @@ describe("settle game round consumer instance", () => {
         endGame: endGame,
         roundsRepository: roundsRepository,
         betsRepository: betsRepository,
+        logService: logService,
     });
 
     it("should instance of Core.BaseEventConsumers.SettleGameRoundConsumer", () => {

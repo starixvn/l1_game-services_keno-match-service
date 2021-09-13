@@ -4,6 +4,20 @@ import { blueAndRedChoices, firstHalfChoiceMapper, fullTimeChoiceMapper } from "
 import { sumArrayObject } from "../helpers/array-helper";
 
 export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameRoundConsumer {
+    constructor({
+        definition,
+        gameData,
+        roundResultPublisher,
+        userBetResultPublisher,
+        endGame,
+        roundsRepository,
+        betsRepository,
+        logService,
+    }) {
+        super({ definition, gameData, roundResultPublisher, userBetResultPublisher, endGame, roundsRepository, betsRepository });
+        this.logService = logService;
+    }
+
     async settleRound() {
         const round = await this.roundsRepository.findOne({ id: this.gameData.roundId }).exec();
 
@@ -25,18 +39,18 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
             await Promise.all(
                 bets.map(async (bet) => {
                     const firstHalfBetResult = this.calculateBetResult(firstHalf.settlementResult, bet, odds, true);
-                    console.log(firstHalfBetResult);
+                    this.logService.log(firstHalfBetResult);
                     const fullTimeBetResult = this.calculateBetResult(fullTime.settlementResult, bet, odds, false);
-                    console.log(fullTimeBetResult);
+                    this.logService.log(fullTimeBetResult);
                     const betResult = sumArrayObject([firstHalfBetResult, fullTimeBetResult]);
-                    console.log(betResult);
+                    this.logService.log(betResult);
 
                     bet.betwin = betResult.totalWin;
                     bet.refund = betResult.refund;
                     bet.thanhtoan = true;
                     bet.odds = odds;
 
-                    console.log(bet);
+                    this.logService.log(bet);
 
                     await bet.save();
                     await this.callEndGame(bet, roundId, fullTime.time, betResult);
