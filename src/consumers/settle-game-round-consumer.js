@@ -1,6 +1,6 @@
 import { Core } from "sc-game-base";
 
-import { firstHalfChoiceMapper, fullTimeChoiceMapper } from "../constants";
+import { blueAndRedChoices, firstHalfChoiceMapper, fullTimeChoiceMapper } from "../constants";
 import { sumArrayObject } from "../helpers/array-helper";
 
 export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameRoundConsumer {
@@ -59,7 +59,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
                         const betAmount = bet[specificChoice] ?? 0;
                         const originalOdds = odds[specificChoice] || 1;
                         const winAmount = win ? betAmount * originalOdds : 0;
-                        const refund = this.isBLueOrRed(choice) && settlementResult.tie ? betAmount : 0;
+                        const refund = this.isBLueOrRedChoice(specificChoice) && settlementResult.tie ? betAmount : 0;
 
                         result.totalBetAmount += betAmount;
                         result.totalWin += winAmount - refund;
@@ -99,7 +99,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
         return choiceMapper[choice];
     }
 
-    isBLueOrRed(choice) {
-        return ["blue", "red"].includes(choice);
+    isBLueOrRedChoice(choice) {
+        return blueAndRedChoices.includes(choice);
     }
 }

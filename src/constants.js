@@ -54,6 +54,8 @@ export const fullTimeChoiceMapper = {
 
 export const liveChoices = ["liveFTBlue", "liveFTRed", "liveFTOver", "liveFTUnder", "liveFTOdd", "liveFTEven"];
 
+export const blueAndRedChoices = ["fhBlue", "fhRed", "ftBlue", "ftRed", "liveFTBlue", "liveFTRed"];
+
 export const choicesMapper = {
     fhBlue: 1,
     fhRed: 2,
