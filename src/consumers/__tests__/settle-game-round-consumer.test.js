@@ -28,7 +28,7 @@ describe("settle game round consumer instance", () => {
     const gameData = new GameData(0);
 
     /** @type {mongoose.Model}*/
-    const roundsRepository = { findOne: () => {} };
+    const roundsRepository = { findOne: () => {}, updateOne: jest.fn() };
 
     /** @type {RoundResultPublisher}*/
     const roundResultPublisher = stub(RoundResultPublisher);
@@ -63,8 +63,12 @@ describe("settle game round consumer instance", () => {
             // arrange
             spyOn(roundsRepository, "findOne").and.callFake(() => {
                 return {
-                    exec: () => {
-                        return null;
+                    lean: () => {
+                        return {
+                            exec: () => {
+                                return null;
+                            },
+                        };
                     },
                 };
             });
@@ -82,8 +86,12 @@ describe("settle game round consumer instance", () => {
             const round = { id: 1, save: jest.fn(), settled: false };
             spyOn(roundsRepository, "findOne").and.callFake(() => {
                 return {
-                    exec: () => {
-                        return round;
+                    lean: () => {
+                        return {
+                            exec: () => {
+                                return round;
+                            },
+                        };
                     },
                 };
             });
@@ -94,8 +102,7 @@ describe("settle game round consumer instance", () => {
 
             // assert
             expect(consumer.settleBets).toHaveBeenCalled();
-            expect(round.save).toHaveBeenCalled();
-            expect(round.settled).toBeTruthy();
+            expect(roundsRepository.updateOne).toHaveBeenCalled();
         });
     });
 
@@ -176,69 +183,4 @@ describe("settle game round consumer instance", () => {
             expect(roundResultPublisher.publishRoundResult).toHaveBeenCalled();
         });
     });
-
-    // it("calculateBetResult tests", () => {
-    //     const settlementResult = { blue: false, red: true, tie: false, over: false, under: true, odd: true, even: false };
-    //     const bet = {
-    //         fhBlue: 10,
-    //         fhEven: 10,
-    //         fhOdd: 10,
-    //         fhOver: 10,
-    //         fhRed: 10,
-    //         fhUnder: 10,
-    //         ftBlue: 0,
-    //         ftEven: 0,
-    //         ftOdd: 0,
-    //         ftOver: 0,
-    //         ftRed: 0,
-    //         ftUnder: 0,
-    //         liveFTBlue: 0,
-    //         liveFTEven: 0,
-    //         liveFTOdd: 0,
-    //         liveFTOver: 0,
-    //         liveFTRed: 0,
-    //         liveFTUnder: 0,
-    //     };
-    //     const odds = {
-    //         fhBlue: 1.96,
-    //         fhRed: 1.96,
-    //         fhOver: 1.96,
-    //         fhUnder: 1.96,
-    //         fhOdd: 1.96,
-    //         fhEven: 1.96,
-    //         ftBlue: 1.96,
-    //         ftRed: 1.96,
-    //         ftOver: 1.96,
-    //         ftUnder: 1.96,
-    //         ftOdd: 1.96,
-    //         ftEven: 1.96,
-    //         liveFTOdd: 1.96,
-    //         liveFTEven: 1.96,
-    //         liveFTBlue: 2.03,
-    //         liveFTRed: 1.99,
-    //         liveFTOver: 2.64,
-    //         liveFTUnder: 1.61,
-    //     };
-
-    //     const firstHalf = consumer.calculateBetResult(
-    //         { blue: false, red: true, tie: false, over: false, under: true, odd: true, even: false },
-    //         bet,
-    //         odds,
-    //         true
-    //     );
-
-    //     console.log(firstHalf);
-
-    //     const fullTime = consumer.calculateBetResult(
-    //         { blue: false, red: true, tie: false, over: false, under: true, odd: true, even: false },
-    //         bet,
-    //         odds,
-    //         false
-    //     );
-
-    //     console.log(fullTime);
-
-    //     const totalBetResult = sumArrayObject([firstHalf, fullTime]);
-    //     console.log(totalBetResult);
-    // });
 });
