@@ -4,20 +4,6 @@ import { blueAndRedChoices, firstHalfChoiceMapper, fullTimeChoiceMapper } from "
 import { sumArrayObject } from "../helpers/array-helper";
 
 export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameRoundConsumer {
-    constructor({
-        definition,
-        gameData,
-        roundResultPublisher,
-        userBetResultPublisher,
-        endGame,
-        roundsRepository,
-        betsRepository,
-        logService,
-    }) {
-        super({ definition, gameData, roundResultPublisher, userBetResultPublisher, endGame, roundsRepository, betsRepository });
-        this.logService = logService;
-    }
-
     async settleRound() {
         const round = await this.roundsRepository.findOne({ id: this.gameData.roundId }).lean().exec();
 
@@ -40,6 +26,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
                     const firstHalfBetResult = this.calculateBetResult(firstHalf.settlementResult, bet, odds, true);
                     const fullTimeBetResult = this.calculateBetResult(fullTime.settlementResult, bet, odds, false);
                     const betResult = sumArrayObject([firstHalfBetResult, fullTimeBetResult]);
+                    betResult.winningByChoices = { ...firstHalfBetResult.winningByChoices, ...fullTimeBetResult.winningByChoices };
 
                     bet.betwin = betResult.totalWin;
                     bet.refund = betResult.refund;
@@ -66,9 +53,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
     calculateBetResult(settlementResult, bet, odds, isFirstHalf) {
         const betResult = Object.entries(settlementResult).reduce(
             (result, [choice, win]) => {
-                this.logService.log(`${choice}:${win}`);
                 const specificChoices = this.getSpecificChoices(choice, isFirstHalf);
-                this.logService.log(specificChoices);
 
                 if (specificChoices && specificChoices.length) {
                     specificChoices.forEach((specificChoice) => {
@@ -76,7 +61,6 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
                         const originalOdds = odds[specificChoice] || 1;
                         const winAmount = win ? betAmount * originalOdds : 0;
                         const refund = this.isBLueOrRedChoice(specificChoice) && settlementResult.tie ? betAmount : 0;
-                        this.logService.log(`${winAmount}:${refund}`);
 
                         result.totalBetAmount += betAmount;
                         result.totalWin += winAmount - refund;
@@ -106,8 +90,6 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
 
         betResult.totalWin = parseFloat(betResult.totalWin.toFixed(2));
         betResult.netWin = parseFloat(betResult.netWin.toFixed(2));
-
-        this.logService.log(betResult);
 
         return betResult;
     }
