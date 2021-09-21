@@ -94,8 +94,6 @@ describe("in game consumer instance", () => {
             gameData.currentMD5 = "md5hash";
             const expectedResult = {
                 ...basePayload,
-                firstHalfResult: { result: firstHalfResult.result, settlementResult: firstHalfResult.settlementResult },
-                liveOdds,
                 md5: "md5hash",
             };
 
