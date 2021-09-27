@@ -25,7 +25,8 @@ describe("Place Bet consumer instance", () => {
     };
     const gameData = new GameData(0);
     gameData.roundId = 1;
-    gameData.gameConfigs = { maxbet: 2000 };
+    gameData.gameConfigs = { maxbet: 2000, odds: { fhBlue: 1.96 } };
+    gameData.liveOdds = {};
     const baseEventPublisher = stub(Core.BaseEventPublishers.BaseEventPublisher);
     const consumer = new PlaceBetConsumer(definition, gameData, baseEventPublisher);
     const realPlayer = {
@@ -51,7 +52,8 @@ describe("Place Bet consumer instance", () => {
         beforeEach(() => {
             gameData.remainingTime = 0;
             gameData.roundId = 1;
-            gameData.gameConfigs = { enabled: true, maxbet: 2000 };
+            gameData.gameConfigs = { enabled: true, maxbet: 2000, odds: { fhBlue: 1.96 } };
+            gameData.liveOdds = {};
         });
 
         it("should return invalidBet notice when game was disabled", () => {
@@ -188,7 +190,6 @@ describe("Place Bet consumer instance", () => {
             ];
             // act
             const actualResult = consumer.composeBetAmountValidationCriteria(realPlayer, "liveFTBlue", 100, false);
-
 
             // assert
             expect(actualResult).toStrictEqual(expectedResult);

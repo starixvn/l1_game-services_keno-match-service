@@ -49,6 +49,10 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
                     !preLiveChoices.includes(betChoice),
                 notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
             },
+            {
+                failure: !this.gameData.liveOdds[betChoice] && !this.gameData.gameConfigs?.odds[betChoice],
+                notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
+            },
         ];
 
         return baseCriteria.concat(criteria);
