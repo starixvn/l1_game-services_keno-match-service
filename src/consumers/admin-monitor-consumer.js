@@ -6,7 +6,7 @@ export class AdminMonitorConsumer extends Core.BaseEventConsumers.AdminMonitorCo
      */
     async consume(socketClient) {
         const lastRound = await this.roundsRepository
-            .findOne({}, { id: true, firstHalf: true, fullTime: true }, { sort: { id: -1 } })
+            .findOne({ settled: true }, { id: true, firstHalf: true, fullTime: true }, { sort: { id: -1 } })
             .lean()
             .exec();
 

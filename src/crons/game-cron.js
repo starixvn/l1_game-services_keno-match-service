@@ -123,7 +123,8 @@ export class GameCron extends Core.Crons.BaseGameCron {
     }
 
     resetForNewRound() {
-        super.resetForNewRound();
+        this.gameData.ingame = {};
+        this.gameData.totalBets = {};
         this.gameData.liveOdds = {};
         this.gameData.firstHalfResult = {};
     }
