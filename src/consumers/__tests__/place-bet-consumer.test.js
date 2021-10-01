@@ -182,11 +182,11 @@ describe("Place Bet consumer instance", () => {
             // arrange
             gameData.liveOdds = { liveFTBlue: 4.2 };
             const expectedResult = [
+                { failure: false, notice: { errorCode: helpers.noticeHelper.maxBetForChoice, maxBet: 625 } },
                 {
                     failure: false,
                     notice: { errorCode: "SB1234" },
                 },
-                { failure: false, notice: { errorCode: helpers.noticeHelper.maxBetForChoice, maxBet: 625 } },
             ];
             // act
             const actualResult = consumer.composeBetAmountValidationCriteria(realPlayer, "liveFTBlue", 100, false);
