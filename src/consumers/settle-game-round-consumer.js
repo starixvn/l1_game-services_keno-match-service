@@ -63,7 +63,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
                         const refund = this.isBLueOrRedChoice(specificChoice) && settlementResult.tie ? betAmount : 0;
 
                         result.totalBetAmount += betAmount;
-                        result.totalWin += winAmount - refund;
+                        result.totalWin += winAmount;
                         result.refund += refund;
 
                         if (winAmount > 0) {

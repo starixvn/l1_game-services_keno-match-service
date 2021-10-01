@@ -106,6 +106,54 @@ describe("settle game round consumer instance", () => {
         });
     });
 
+    it("calculateBetResult tests", () => {
+        // arrange
+        const settlementResult = { blue: false, red: false, tie: true, over: true, under: false, odd: false, even: true };
+        const bet = { fhBlue: 100, fhRed: 100, fhOver: 100, fhUnder: 100, fhEven: 100, fhOdd: 100 };
+        const odds = {
+            fhBlue: 1.96,
+            fhRed: 1.96,
+            fhOver: 1.96,
+            fhUnder: 1.96,
+            fhOdd: 1.96,
+            fhEven: 1.96,
+            ftBlue: 1.96,
+            ftRed: 1.96,
+            ftOver: 1.96,
+            ftUnder: 1.96,
+            ftOdd: 1.96,
+            ftEven: 1.96,
+            liveFTOdd: 1.96,
+            liveFTEven: 1.96,
+            liveFTBlue: 2.03,
+            liveFTRed: 1.99,
+            liveFTOver: 2.64,
+            liveFTUnder: 1.61,
+        };
+
+        const expectedResult = {
+            totalBetAmount: 600,
+            totalWin: 392,
+            netWin: 192,
+            totalLost: 200,
+            refund: 200,
+            winningByChoices: {
+                fhBlue: 100,
+                fhRed: 100,
+                fhOver: 196,
+                fhUnder: 0,
+                fhOdd: 0,
+                fhEven: 196,
+            },
+        };
+
+        // act
+        const actualResult = consumer.calculateBetResult(settlementResult, bet, odds, true);
+
+        // assert
+        expect(expectedResult).toStrictEqual(actualResult);
+    });
+
     describe("settleBets tests_", () => {
         it("always_calls queryBets and publishRoundResult", async () => {
             // arrange
