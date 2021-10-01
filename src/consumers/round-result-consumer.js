@@ -61,10 +61,11 @@ export class RoundResultConsumer {
 
     async generateFullTimeResult() {
         const { roundId, firstHalfResult, settlementResultFromAdmin: resultFromAdmin } = this.gameData;
+        const result = firstHalfResult.result;
         const fullTimeResult =
             roundId === resultFromAdmin.roundId
                 ? resultFromAdmin.result.fullTime.result
-                : { blue: this.definition.generateResult(firstHalfResult.blue), red: this.definition.generateResult(firstHalfResult.red) };
+                : { blue: this.definition.generateResult(result?.blue), red: this.definition.generateResult(result?.red) };
 
         const totalBlue = sumArrayNumber(fullTimeResult.blue) + firstHalfResult.totalBlue;
         const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalRed;
