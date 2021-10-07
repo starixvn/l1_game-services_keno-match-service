@@ -1,17 +1,11 @@
 import { asClass, asValue } from "awilix";
 import { GameDefinition, MultipleGamesContainerRegistry } from "sc-multiple-games-base";
 
-import {
-    AdminMonitorConsumer,
-    InGameConsumer,
-    PlaceBetConsumer,
-    RoundResultConsumer,
-    SettleGameRoundConsumer,
-} from "./consumers";
+import { AdminMonitorConsumer, InGameConsumer, PlaceBetConsumer, RoundResultConsumer, SettleGameRoundConsumer } from "./consumers";
 import { GameCron, ProcessBetQueue } from "./crons";
 import { GameData } from "./game-data";
 import globalConfigs from "./models/global-configs";
-import { RoundResultPublisher } from "./publishers";
+import { RoundResultPublisher, UserBetResultPublisher } from "./publishers";
 import { HistoryQuery, RoundQuery } from "./query-apis";
 
 export default class KenoMatchContainerRegistry extends MultipleGamesContainerRegistry {
@@ -71,6 +65,7 @@ export default class KenoMatchContainerRegistry extends MultipleGamesContainerRe
 
         this.container.register({
             roundResultPublisher: asClass(RoundResultPublisher).singleton(),
+            userBetResultPublisher: asClass(UserBetResultPublisher).singleton(),
         });
     }
 
