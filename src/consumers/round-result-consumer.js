@@ -46,6 +46,7 @@ export class RoundResultConsumer {
             id: this.gameData.roundId,
             odds,
             firstHalf: { result, sum, settlementResult, resultKey, md5, time: new Date() },
+            time: new Date(),
         });
 
         this.gameData.currentMD5 = md5;
