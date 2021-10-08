@@ -133,7 +133,7 @@ describe("settle game round consumer instance", () => {
 
         const expectedResult = {
             totalBetAmount: 600,
-            totalWin: 392,
+            totalWin: 592,
             netWin: 192,
             totalLost: 200,
             refund: 200,

@@ -28,7 +28,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
                     const betResult = sumArrayObject([firstHalfBetResult, fullTimeBetResult]);
                     betResult.winningByChoices = { ...firstHalfBetResult.winningByChoices, ...fullTimeBetResult.winningByChoices };
 
-                    bet.betwin = betResult.totalWin;
+                    bet.betwin = betResult.totalWin - betResult.refund;
                     bet.refund = betResult.refund;
                     bet.thanhtoan = true;
                     bet.odds = odds;
@@ -59,8 +59,8 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
                     specificChoices.forEach((specificChoice) => {
                         const betAmount = bet[specificChoice] ?? 0;
                         const originalOdds = odds[specificChoice] || 1;
-                        const winAmount = win ? betAmount * originalOdds : 0;
                         const refund = this.isBLueOrRedChoice(specificChoice) && settlementResult.tie ? betAmount : 0;
+                        const winAmount = win ? betAmount * originalOdds : refund;
 
                         result.totalBetAmount += betAmount;
                         result.totalWin += winAmount;
