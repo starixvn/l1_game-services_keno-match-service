@@ -42,7 +42,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
     async start() {
         const lastRound = await this.roundsRepository
-            .findOne({}, "id firstHalf fullTime", { sort: { id: -1 } })
+            .findOne({}, "id firstHalf fullTime settled", { sort: { id: -1 } })
             .lean()
             .exec();
 
