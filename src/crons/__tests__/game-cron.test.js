@@ -12,6 +12,7 @@ describe("game cron instance", () => {
     const definition = {
         id: 36,
         name: "KenoMatch1",
+        configName: "kenomatch1",
         durations: {
             wholeRound: 62,
             firstHalfPlacingBets: 54,
@@ -55,6 +56,7 @@ describe("game cron instance", () => {
 
     /** @type {mongoose.Model}*/
     const gameConfigsRepository = stubMongooseModelStupidly(mongoose.Model);
+    gameConfigsRepository.updateOne = jest.fn();
 
     /** @type {mongoose.Model}*/
     const roundsRepository = stubMongooseModelStupidly(mongoose.Model);
@@ -64,6 +66,9 @@ describe("game cron instance", () => {
 
     /** @type {mongoose.Model}*/
     const notificationRepository = stubMongooseModelStupidly(mongoose.Model);
+
+    /** @type {mongoose.Model}*/
+    const globalConfigsRepository = stubMongooseModelStupidly(mongoose.Model);
 
     /** @type {RoundResultConsumer}*/
     const roundResultConsumer = stub(RoundResultConsumer);
@@ -81,10 +86,51 @@ describe("game cron instance", () => {
         archiveStatusesRepository,
         notificationRepository,
         roundResultConsumer,
+        globalConfigsRepository,
     });
 
     it("should be instance of Core.Crons.BaseGameCron", () => {
         expect(gameCron instanceof Core.Crons.BaseGameCron).toBeTruthy();
+    });
+
+    describe("checkGameStatus tests", () => {
+        it("game is enabled, should update gameData.gameConfigs and call publishStartGame", async () => {
+            const gameConfigs = { enabled: true };
+            gameData.disabled = false;
+            gameData.remainingTime = definition.durations.wholeRound;
+            gameConfigsRepository.findOne().lean().exec.mockReturnValueOnce({ enabled: true });
+
+            await gameCron.checkGameStatus();
+
+            expect(gameData.gameConfigs).toEqual(gameConfigs);
+            expect(gameStatusPublisher.publishStartGame).toHaveBeenCalled();
+        });
+
+        it("game is disabled, should reset gameData.remainingTime, update game configs and call publishDisableGameStatus", async () => {
+            const gameConfigs = { enabled: false };
+            gameData.disabled = false;
+            gameData.remainingTime = definition.durations.wholeRound;
+            gameConfigsRepository.findOne().lean().exec.mockReturnValueOnce(gameConfigs);
+
+            await gameCron.checkGameStatus();
+
+            expect(gameData.gameConfigs).toEqual(gameConfigs);
+            expect(gameData.remainingTime).toEqual(definition.durations.wholeRound);
+            expect(gameConfigsRepository.updateOne).toHaveBeenCalled();
+            expect(gameStatusPublisher.publishDisableGameStatus).toHaveBeenCalled();
+        });
+
+        it("game is currently disabled, then being enabled, should call publishEnablingGameStatus", async () => {
+            const gameConfigs = { enabled: true };
+            gameData.disabled = true;
+            gameData.remainingTime = definition.durations.wholeRound;
+            gameConfigsRepository.findOne().lean().exec.mockReturnValueOnce(gameConfigs);
+
+            await gameCron.checkGameStatus();
+
+            expect(gameData.gameConfigs).toEqual(gameConfigs);
+            expect(gameStatusPublisher.publishEnablingGameStatus).toHaveBeenCalled();
+        });
     });
 
     describe("proceed tests", () => {
@@ -165,6 +211,42 @@ describe("game cron instance", () => {
 
             // assert
             expect(runningRoundInfoPublisher.publish).toHaveBeenCalled();
+        });
+    });
+
+    describe("start tests", () => {
+        it("should call getLastArchiveRound when last round doesn't exist", async () => {
+            // arrange
+            roundsRepository.findOne().lean().exec.mockReturnValueOnce(null);
+            spyOn(gameCron, "getLastArchiveRound");
+
+            // act
+            await gameCron.start();
+
+            // arrange
+            expect(gameCron.getLastArchiveRound).toHaveBeenCalled();
+        });
+
+        it("should increase round id when last round was settled", async () => {
+            // arrange
+            roundsRepository.findOne().lean().exec.mockReturnValueOnce({ id: 1, settled: true });
+
+            // act
+            await gameCron.start();
+
+            // arrange
+            expect(gameData.roundId).toStrictEqual(2);
+        });
+
+        it("should keep round id when last round is running", async () => {
+            // arrange
+            roundsRepository.findOne().lean().exec.mockReturnValueOnce({ id: 1, settled: false });
+
+            // act
+            await gameCron.start();
+
+            // arrange
+            expect(gameData.roundId).toStrictEqual(1);
         });
     });
 });
