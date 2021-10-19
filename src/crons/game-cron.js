@@ -157,7 +157,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
             if (currentRound.fullTime && currentRound.fullTime.result) {
                 this.gameData.remainingTime = 0;
             } else {
-                this.gameData.remainingTime = this.definition.durations.firstHalfPlacingBets;
+                this.gameData.remainingTime = this.definition.durations.finishFirstHalf + 1;
                 const { result, settlementResult, resultKey, md5 } = currentRound.firstHalf;
                 const totalBlue = sumArrayNumber(result.blue);
                 const totalRed = sumArrayNumber(result.red);
