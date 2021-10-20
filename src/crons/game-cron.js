@@ -141,7 +141,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
             await this.gameConfigsRepository.updateOne({ name: configName }, { disabledround: this.gameData.roundId });
         } else if (previouslyDisabled) {
-            this.initGameData();
+            await this.initGameData();
             this.gameStatusPublisher.publishEnablingGameStatus();
         } else {
             this.gameStatusPublisher.publishStartGame();
