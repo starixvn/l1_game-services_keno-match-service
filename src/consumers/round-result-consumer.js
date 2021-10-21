@@ -55,8 +55,8 @@ export class RoundResultConsumer {
     }
 
     handleFinishFistHalf() {
-        const { firstHalfResult, liveOdds } = this.gameData;
-        this.roundResultPublisher.publishFirstHalfResult(firstHalfResult);
+        const { firstHalfResult, liveOdds, roundId } = this.gameData;
+        this.roundResultPublisher.publishFirstHalfResult({ ...firstHalfResult, roundId });
         this.roundResultPublisher.publishToAllUsers({ liveOdds });
     }
 
