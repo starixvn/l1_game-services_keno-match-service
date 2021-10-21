@@ -154,28 +154,28 @@ export class GameCron extends Core.Crons.BaseGameCron {
             .lean()
             .exec();
         if (currentRound) {
+            const { result, settlementResult, resultKey, md5 } = currentRound.firstHalf;
+            const totalBlue = sumArrayNumber(result.blue);
+            const totalRed = sumArrayNumber(result.red);
+            const sum = totalRed + totalBlue;
+            this.gameData.firstHalfResult = {
+                result,
+                resultKey,
+                settlementResult,
+                totalBlue,
+                totalRed,
+            };
+            this.gameData.currentMD5 = md5;
+            const liveOdds = await this.globalConfigsRepository.findOne({ type: "kenomatch_liveodds" }, "blueRed overUnder").lean().exec();
+            this.gameData.liveOdds = { ...liveOdds.blueRed[totalBlue - totalRed], ...liveOdds.overUnder[sum] };
+
             if (currentRound.fullTime && currentRound.fullTime.result) {
                 this.gameData.remainingTime = 0;
             } else {
-                this.gameData.remainingTime = this.definition.durations.finishFirstHalf + 1;
-                const { result, settlementResult, resultKey, md5 } = currentRound.firstHalf;
-                const totalBlue = sumArrayNumber(result.blue);
-                const totalRed = sumArrayNumber(result.red);
-                const sum = totalRed + totalBlue;
-                this.gameData.firstHalfResult = {
-                    result,
-                    resultKey,
-                    settlementResult,
-                    totalBlue,
-                    totalRed,
-                };
-                this.gameData.currentMD5 = md5;
-                const liveOdds = await this.globalConfigsRepository
-                    .findOne({ type: "kenomatch_liveodds" }, "blueRed overUnder")
-                    .lean()
-                    .exec();
-                this.gameData.liveOdds = { ...liveOdds.blueRed[totalBlue - totalRed], ...liveOdds.overUnder[sum] };
+                this.gameData.remainingTime = this.definition.durations.finishFirstHalf;
             }
+
+            this.roundResultConsumer.handleFinishFistHalf();
         }
     }
 }
