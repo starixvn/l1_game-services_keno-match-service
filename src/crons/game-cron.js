@@ -149,10 +149,8 @@ export class GameCron extends Core.Crons.BaseGameCron {
     }
 
     async initGameData() {
-        const currentRound = await this.roundsRepository
-            .findOne({ id: this.gameData.roundId }, "id firstHalf fullTime settled")
-            .lean()
-            .exec();
+        const { roundId } = this.gameData;
+        const currentRound = await this.roundsRepository.findOne({ id: roundId }, "id firstHalf fullTime settled").lean().exec();
         if (currentRound) {
             const { result, settlementResult, resultKey, md5 } = currentRound.firstHalf;
             const totalBlue = sumArrayNumber(result.blue);
@@ -164,6 +162,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
                 settlementResult,
                 totalBlue,
                 totalRed,
+                roundId,
             };
             this.gameData.currentMD5 = md5;
             const liveOdds = await this.globalConfigsRepository.findOne({ type: "kenomatch_liveodds" }, "blueRed overUnder").lean().exec();

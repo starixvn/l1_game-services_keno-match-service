@@ -24,9 +24,10 @@ export class RoundResultConsumer {
 
     async generateFirstHalfResult() {
         const resultFromAdmin = this.gameData.settlementResultFromAdmin;
+        const { roundId } = this.gameData;
 
         const result =
-            this.gameData.roundId === resultFromAdmin.roundId
+            roundId === resultFromAdmin.roundId
                 ? resultFromAdmin.result.firstHalf.result
                 : { blue: this.definition.generateResult(), red: this.definition.generateResult() };
 
@@ -43,20 +44,20 @@ export class RoundResultConsumer {
         const md5 = createHashMD5(resultKey);
 
         await this.roundsRepository.create({
-            id: this.gameData.roundId,
+            id: roundId,
             odds,
             firstHalf: { result, sum, settlementResult, resultKey, md5, time: new Date() },
             time: new Date(),
         });
 
         this.gameData.currentMD5 = md5;
-        this.gameData.firstHalfResult = { result, settlementResult, totalRed, totalBlue, resultKey };
+        this.gameData.firstHalfResult = { result, settlementResult, totalRed, totalBlue, resultKey, roundId };
         this.roundResultPublisher.publishMD5(md5);
     }
 
     handleFinishFistHalf() {
-        const { firstHalfResult, liveOdds, roundId } = this.gameData;
-        this.roundResultPublisher.publishFirstHalfResult({ ...firstHalfResult, roundId });
+        const { firstHalfResult, liveOdds } = this.gameData;
+        this.roundResultPublisher.publishFirstHalfResult(firstHalfResult);
         this.roundResultPublisher.publishToAllUsers({ liveOdds });
     }
 
