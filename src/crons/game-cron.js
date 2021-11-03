@@ -1,13 +1,13 @@
 import cron from "cron";
-import mongoose from "mongoose";
 import { Core } from "sc-game-base";
 
+import { RoundResultConsumer } from "../consumers";
 import { sumArrayNumber } from "../helpers/array-helper";
 
 export class GameCron extends Core.Crons.BaseGameCron {
     /**
      * @param {Object} dependencies
-     * @param {mongoose.Model} dependencies.globalConfigsRepository
+     * @param {RoundResultConsumer} dependencies.roundResultConsumer
      */
     constructor({
         definition,
@@ -21,6 +21,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
         roundsRepository,
         archiveStatusesRepository,
         notificationRepository,
+        roundResultConsumer,
         globalConfigsRepository,
     }) {
         super({
@@ -37,12 +38,13 @@ export class GameCron extends Core.Crons.BaseGameCron {
             notificationRepository,
         });
 
+        this.roundResultConsumer = roundResultConsumer;
         this.globalConfigsRepository = globalConfigsRepository;
     }
 
     async start() {
         const lastRound = await this.roundsRepository
-            .findOne({}, "id halfTime fullTime", { sort: { id: -1 } })
+            .findOne({}, "id settled", { sort: { id: -1 } })
             .lean()
             .exec();
 
@@ -58,25 +60,14 @@ export class GameCron extends Core.Crons.BaseGameCron {
         );
 
         if (lastRound) {
-            if (lastRound.fullTime && lastRound.fullTime.result) {
+            if (lastRound.settled) {
                 this.gameData.roundId = lastRound.id + 1;
             } else {
-                this.gameData.remainingTime = this.definition.durations.finishHalfTime;
-                const halfTimeResult = lastRound.halfTime.result;
-
-                this.gameData.halfTimeResult = {
-                    ...halfTimeResult,
-                    totalHome: sumArrayNumber(halfTimeResult.home),
-                    totalAway: sumArrayNumber(halfTimeResult.away),
-                };
-
-                this.checkGameStatus();
+                this.gameData.roundId = lastRound.id;
             }
         } else {
             this.gameData.roundId = await this.getLastArchiveRound();
         }
-
-        await this.updateLiveOdds();
 
         job.start();
     }
@@ -94,36 +85,96 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
         if (this.isStartingTime(this.gameData.remainingTime, durations)) {
             this.resetForNewRound();
-            this.bot && (await this.bot.reset());
+            await this.roundResultConsumer.generateFirstHalfResult();
         }
 
-        if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.finishHalfTime) {
-            await this.settleGameRoundConsumer.handleFinishHalfTime();
+        if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.finishFirstHalf) {
+            this.roundResultConsumer.handleFinishFistHalf();
+        }
+
+        if (!this.gameData.disabled && this.gameData.remainingTime === this.definition.durations.placingBets) {
+            await this.roundResultConsumer.generateFullTimeResult();
         }
 
         if (this.gameData.remainingTime < 0) {
             this.gameData.remainingTime = durations.wholeRound;
-            await this.settleGameRoundConsumer.settleRound(this.gameData);
-        } else if (this.gameData.remainingTime < durations.halfTimePlacingBets) {
-            this.bot && (await this.bot.run());
+            await this.settleGameRoundConsumer.settleRound();
+        } else if (this.gameData.remainingTime < durations.firstHalfPlacingBets) {
             this.runningRoundInfoPublisher.publish();
         }
     }
 
     isStartingTime(remainingTime, durations) {
-        return remainingTime === durations.halfTimePlacingBets;
+        return remainingTime === durations.firstHalfPlacingBets;
     }
 
     resetForNewRound() {
-        this.gameData.halfTimeResult = {};
+        this.gameData.ingame = {};
+        this.gameData.totalBets = {};
+        this.gameData.liveOdds = {};
+        this.gameData.firstHalfResult = {};
     }
 
     async checkGameStatus() {
-        await super.checkGameStatus();
-        await this.updateLiveOdds();
+        const { configName, durations } = this.definition;
+        const configs = await this.gameConfigsRepository.findOne({ name: configName }).lean().exec();
+        const previouslyDisabled = this.gameData.disabled;
+        const configuredlyDisabled = !configs || !configs.enabled;
+
+        if (previouslyDisabled) {
+            if (this.gameData.delayStartTime > 0) {
+                this.gameData.delayStartTime--;
+            } else if (!configuredlyDisabled) {
+                this.gameData.delayStartTime = configs?.delayStartTime ?? 0;
+            }
+        }
+
+        this.gameData.umMessages =
+            (await this.notificationRepository.findOne({ gameName: configName, displayKind: 2 }, "messages").lean().exec())?.messages ?? {};
+
+        this.gameData.gameConfigs = configs ?? {};
+        this.gameData.disabled = configuredlyDisabled || this.gameData.delayStartTime > 0;
+
+        if (this.gameData.disabled) {
+            this.gameData.remainingTime = durations.wholeRound;
+            this.gameStatusPublisher.publishDisableGameStatus();
+
+            await this.gameConfigsRepository.updateOne({ name: configName }, { disabledround: this.gameData.roundId });
+        } else if (previouslyDisabled) {
+            await this.initGameData();
+            this.gameStatusPublisher.publishEnablingGameStatus();
+        } else {
+            this.gameStatusPublisher.publishStartGame();
+        }
     }
 
-    async updateLiveOdds() {
-        this.gameData.liveOdds = await this.globalConfigsRepository.findOne({ type: "kenomatch_liveodds"}, "blueRed overUnder").lean();
+    async initGameData() {
+        const { roundId } = this.gameData;
+        const currentRound = await this.roundsRepository.findOne({ id: roundId }, "id firstHalf fullTime settled").lean().exec();
+        if (currentRound) {
+            const { result, settlementResult, resultKey, md5 } = currentRound.firstHalf;
+            const totalBlue = sumArrayNumber(result.blue);
+            const totalRed = sumArrayNumber(result.red);
+            const sum = totalRed + totalBlue;
+            this.gameData.firstHalfResult = {
+                result,
+                resultKey,
+                settlementResult,
+                totalBlue,
+                totalRed,
+                roundId,
+            };
+            this.gameData.currentMD5 = md5;
+            const liveOdds = await this.globalConfigsRepository.findOne({ type: "kenomatch_liveodds" }, "blueRed overUnder").lean().exec();
+            this.gameData.liveOdds = { ...liveOdds.blueRed[totalBlue - totalRed], ...liveOdds.overUnder[sum] };
+
+            if (currentRound.fullTime && currentRound.fullTime.result) {
+                this.gameData.remainingTime = 0;
+            } else {
+                this.gameData.remainingTime = this.definition.durations.finishFirstHalf;
+            }
+
+            this.roundResultConsumer.handleFinishFistHalf();
+        }
     }
 }

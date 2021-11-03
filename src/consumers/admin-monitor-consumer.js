@@ -1,23 +1,19 @@
 import { Core } from "sc-game-base";
 
 export class AdminMonitorConsumer extends Core.BaseEventConsumers.AdminMonitorConsumer {
-    constructor(definition, gameData, adminPublisher, roundsRepository) {
-        super(definition, gameData, adminPublisher, roundsRepository);
-    }
-
     /**
      * @param {Socket} socketClient
      */
     async consume(socketClient) {
         const lastRound = await this.roundsRepository
-            .findOne({}, { id: true, halfTime: true, fullTime: true }, { sort: { id: -1 } })
+            .findOne({ settled: true }, { id: true, firstHalf: true, fullTime: true }, { sort: { id: -1 } })
             .lean()
             .exec();
 
         if (lastRound) {
             const payload = {
                 roundId: lastRound.id + 1,
-                halfTime: lastRound.halfTime,
+                firstHalf: lastRound.firstHalf,
                 fullTime: lastRound.fullTime,
                 remainingTime: this.gameData.remainingTime,
             };

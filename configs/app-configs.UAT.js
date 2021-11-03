@@ -41,7 +41,7 @@ export default {
         },
     },
     sentry: {
-        sentryUrl: "http://52368c4019044019885440599c180bda@10.99.99.187:800/24",
+        sentryUrl: "http://52368c4019044019885440599c180bda@10.2.190.51:9009/24",
         logIdentifier: "keno-match",
         env: "UAT",
     },
@@ -51,12 +51,12 @@ export default {
     adminSecretKey: "asWDEerfOIdgsdqRTFabvmgh",
     enableCorsWs: true,
     corsUrls: [
-        "http://uat.sabagame.com",
-        "https://uat.sabagame.com",
-        "http://uat-adm.sabagame.com",
-        "https://uat-adm.sabagame.com",
-        "http://uatm.sabagame.com",
-        "https://uatm.sabagame.com",
+        "http://l1uat.sgamesuat.com",
+        "https://l1uat.sgamesuat.com",
+        "http://l1uatadm.sgamesuat.com",
+        "https://l1uatadm.sgamesuat.com",
+        "http://l1uatm.sgamesuat.com",
+        "https://l1uatm.sgamesuat.com",
     ],
     metrics: {
         enable: true,

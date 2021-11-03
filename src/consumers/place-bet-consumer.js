@@ -21,10 +21,10 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
                     !(
                         this.gameData.remainingTime >= this.definition.durations.lockingBet &&
                         this.gameData.remainingTime < this.definition.durations.placingBets
-                    ) ||
+                    ) &&
                     !(
-                        this.gameData.remainingTime >= this.definition.durations.halfTimeLockingBet &&
-                        this.gameData.remainingTime < this.definition.durations.halfTimePlacingBets
+                        this.gameData.remainingTime >= this.definition.durations.firstHalfLockingBet &&
+                        this.gameData.remainingTime < this.definition.durations.firstHalfPlacingBets
                     ),
                 notice: this.getNoticeObj(helpers.noticeHelper.placeBetNextRound),
             },
@@ -44,13 +44,38 @@ export class PlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
             },
             {
                 failure:
-                    this.gameData.remainingTime >= this.definition.durations.halfTimeLockingBet &&
-                    this.gameData.remainingTime < this.definition.durations.halfTimePlacingBets &&
+                    this.gameData.remainingTime >= this.definition.durations.firstHalfLockingBet &&
+                    this.gameData.remainingTime < this.definition.durations.firstHalfPlacingBets &&
                     !preLiveChoices.includes(betChoice),
+                notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
+            },
+            {
+                failure: !this.gameData.liveOdds[betChoice] && !this.gameData.gameConfigs?.odds[betChoice],
                 notice: this.getNoticeObj(helpers.noticeHelper.invalidBet),
             },
         ];
 
         return baseCriteria.concat(criteria);
+    }
+
+    composeBetAmountValidationCriteria(player, betChoice, amount, freeBet) {
+        const baseCriteria = super.composeBetAmountValidationCriteria(player, betChoice, amount, freeBet);
+
+        if (liveChoices.includes(betChoice)) {
+            const { betTracks } = this.gameData.ingame[player.profile.name] || { betTracks: {} };
+            const { gameConfigs, liveOdds } = this.gameData;
+            const maxBetForChoice = Math.round(Math.min(gameConfigs.maxbet / (liveOdds[betChoice] - 1), gameConfigs.maxbet));
+
+            const criteria = [
+                {
+                    failure: amount > maxBetForChoice || betTracks[betChoice] + amount > maxBetForChoice,
+                    notice: this.getNoticeObj(helpers.noticeHelper.maxBetForChoice, { maxBet: maxBetForChoice }),
+                },
+            ];
+
+            return criteria.concat(baseCriteria);
+        }
+
+        return baseCriteria;
     }
 }

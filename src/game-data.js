@@ -4,7 +4,8 @@ export class GameData extends Core.GameData {
     constructor(remainingTime) {
         super(remainingTime);
 
-        this.halfTimeResult = {};
         this.liveOdds = {};
+        this.firstHalfResult = {};
+        this.currentMD5 = "";
     }
 }

@@ -22,7 +22,7 @@ export class KenoMatchApp extends Core.BaseGameApp {
     }
 }
 
-const run = async () => {
+export const run = async () => {
     const definitions = gameSettings.map((gameSetting) => new GameDefinition(gameSetting));
     const app = new KenoMatchApp("Keno Match", appConfigs);
     await app.run();
