@@ -24,7 +24,7 @@ export class RoundResultConsumer {
 
     async generateFirstHalfResult() {
         const resultFromAdmin = this.gameData.settlementResultFromAdmin;
-        const { roundId } = this.gameData;
+        const { roundId, exchangeRates } = this.gameData;
 
         const result =
             roundId === resultFromAdmin.roundId
@@ -48,6 +48,7 @@ export class RoundResultConsumer {
             odds,
             firstHalf: { result, sum, settlementResult, resultKey, md5, time: new Date() },
             time: new Date(),
+            exchangeRateId: exchangeRates.exId,
         });
 
         this.gameData.currentMD5 = md5;
