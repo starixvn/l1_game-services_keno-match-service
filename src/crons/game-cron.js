@@ -23,6 +23,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
         notificationRepository,
         exchangeRatesRepository,
         currencyGroupGamesRepository,
+        partnerConfigRepository,
         roundResultConsumer,
         globalConfigsRepository,
     }) {
@@ -40,6 +41,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
             notificationRepository,
             exchangeRatesRepository,
             currencyGroupGamesRepository,
+            partnerConfigRepository,
         });
 
         this.roundResultConsumer = roundResultConsumer;
