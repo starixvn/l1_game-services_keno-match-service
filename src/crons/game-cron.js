@@ -77,6 +77,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
         await this.updateCurrencyGroupGames();
         await this.updateExchangeRates();
+        await this.updatePartnerGameSiteExclusions();
 
         job.start();
     }
@@ -144,6 +145,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
         this.gameData.gameConfigs = configs ?? {};
         this.gameData.disabled = configuredlyDisabled || this.gameData.delayStartTime > 0;
         await this.updateCurrencyGroupGames();
+        await this.updatePartnerGameSiteExclusions();
 
         if (this.gameData.gameConfigs.exchangeReload) {
             await this.updateExchangeRates();
