@@ -24,6 +24,8 @@ export class GameCron extends Core.Crons.BaseGameCron {
         exchangeRatesRepository,
         currencyGroupGamesRepository,
         partnerConfigRepository,
+        currencyGroupRepository,
+        currencyRepository,
         roundResultConsumer,
         globalConfigsRepository,
     }) {
@@ -42,6 +44,8 @@ export class GameCron extends Core.Crons.BaseGameCron {
             exchangeRatesRepository,
             currencyGroupGamesRepository,
             partnerConfigRepository,
+            currencyGroupRepository,
+            currencyRepository,
         });
 
         this.roundResultConsumer = roundResultConsumer;
@@ -75,9 +79,8 @@ export class GameCron extends Core.Crons.BaseGameCron {
             this.gameData.roundId = await this.getLastArchiveRound();
         }
 
-        await this.updateCurrencyGroupGames();
+        await this.getSettingForNewRound();
         await this.updateExchangeRates();
-        await this.updatePartnerGameSiteExclusions();
 
         job.start();
     }
@@ -144,8 +147,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
 
         this.gameData.gameConfigs = configs ?? {};
         this.gameData.disabled = configuredlyDisabled || this.gameData.delayStartTime > 0;
-        await this.updateCurrencyGroupGames();
-        await this.updatePartnerGameSiteExclusions();
+        await this.getSettingForNewRound();
 
         if (this.gameData.gameConfigs.exchangeReload) {
             await this.updateExchangeRates();

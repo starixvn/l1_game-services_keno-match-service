@@ -8116,10 +8116,10 @@ sc-common@^1.6.0, sc-common@^1.7.0:
     mongoose-long "^0.3.0"
     numeral "^2.0.6"
 
-sc-game-base@2.0.1-beta.24:
-  version "2.0.1-beta.24"
-  resolved "http://npm.lumigame.com/sc-game-base/-/sc-game-base-2.0.1-beta.24.tgz#4d3056441489d4fb942318969c2f21fe79747480"
-  integrity sha512-nJxKt516NXtCOtaqAXGPhs5dsvQS7TsNkjDhFziDwkDE7nLGyv0/zdYr/mL18/HQVhTEtyhBJydxh0u1ZQlrSg==
+sc-game-base@2.0.1-beta.27:
+  version "2.0.1-beta.27"
+  resolved "http://npm.lumigame.com/sc-game-base/-/sc-game-base-2.0.1-beta.27.tgz#e188e6364d67bcae2ceafdec05a62a7ed181f21c"
+  integrity sha512-3N/GytmDQ3dFymSbBXwrmI8qIX3G+Nv75dQgy4nBw+9J8+oxEclGwwq2XI5DI7U/9i38bXgGcf7ITSFq2k4DjA==
   dependencies:
     "@socket.io/admin-ui" "^0.2.0"
     awilix "^4.3.1"
@@ -8140,12 +8140,12 @@ sc-game-base@2.0.1-beta.24:
     socket.io "^4.1.2"
     socket.io-prom-metrics "^1.0.3"
 
-sc-multiple-games-base@1.0.2-beta.1:
-  version "1.0.2-beta.1"
-  resolved "http://npm.lumigame.com/sc-multiple-games-base/-/sc-multiple-games-base-1.0.2-beta.1.tgz#44d9dbf41072cee6d57a66e18d76a8684853473c"
-  integrity sha512-TNlo/P05csrpFiM886Yi645b1q+wIzzkJA27P8JLQy6VQzrjvRL23jxKIPId/1Q2Xf8f05QgnvPblMTQSVPE6A==
+sc-multiple-games-base@1.0.2-beta.2:
+  version "1.0.2-beta.2"
+  resolved "http://npm.lumigame.com/sc-multiple-games-base/-/sc-multiple-games-base-1.0.2-beta.2.tgz#f2d5dc818aa7b8ca408c10b1f46a9f57f9ce70a5"
+  integrity sha512-0U2PZ9wR7PkFaH2r2zBzqYFJGMxoUL5VNpQlZtduaarxmOH1WK+Jl0IOs6ba6lpQXlXnqfCRXJHOyWdG97MFpA==
   dependencies:
-    sc-game-base "2.0.1-beta.24"
+    sc-game-base "2.0.1-beta.27"
 
 sc-semantic-release@^1.1.0:
   version "1.2.0"
