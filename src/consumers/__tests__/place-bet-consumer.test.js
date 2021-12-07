@@ -36,6 +36,9 @@ describe("Place Bet consumer instance", () => {
         profile: {
             name: "player01",
         },
+        session: {
+            currencyGroupId: "1",
+        },
     };
 
     beforeAll(() => {
@@ -181,6 +184,13 @@ describe("Place Bet consumer instance", () => {
         it("should return correct result when betChoice is live", () => {
             // arrange
             gameData.liveOdds = { liveFTBlue: 4.2 };
+            gameData.currencyGroupGames = [
+                {
+                    groupId: 1,
+                    minBet: 1,
+                    maxBet: 2000,
+                },
+            ];
             const expectedResult = [
                 { failure: false, notice: { errorCode: helpers.noticeHelper.maxBetForChoice, maxBet: 625 } },
                 {

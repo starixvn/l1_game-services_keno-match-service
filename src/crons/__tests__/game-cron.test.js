@@ -65,10 +65,25 @@ describe("game cron instance", () => {
     const archiveStatusesRepository = stubMongooseModelStupidly(mongoose.Model);
 
     /** @type {mongoose.Model}*/
+    const exchangeRatesRepository = stubMongooseModelStupidly(mongoose.Model);
+
+    /** @type {mongoose.Model}*/
+    const currencyGroupGamesRepository = stubMongooseModelStupidly(mongoose.Model);
+
+    /** @type {mongoose.Model}*/
     const notificationRepository = stubMongooseModelStupidly(mongoose.Model);
 
     /** @type {mongoose.Model}*/
     const globalConfigsRepository = stubMongooseModelStupidly(mongoose.Model);
+
+    /** @type {mongoose.Model}*/
+    const partnerConfigRepository = stubMongooseModelStupidly(mongoose.Model);
+
+    /** @type {mongoose.Model}*/
+    const currencyGroupRepository = stubMongooseModelStupidly(mongoose.Model);
+
+    /** @type {mongoose.Model}*/
+    const currencyRepository = stubMongooseModelStupidly(mongoose.Model);
 
     /** @type {RoundResultConsumer}*/
     const roundResultConsumer = stub(RoundResultConsumer);
@@ -85,6 +100,11 @@ describe("game cron instance", () => {
         roundsRepository,
         archiveStatusesRepository,
         notificationRepository,
+        exchangeRatesRepository,
+        currencyGroupGamesRepository,
+        partnerConfigRepository,
+        currencyGroupRepository,
+        currencyRepository,
         roundResultConsumer,
         globalConfigsRepository,
     });

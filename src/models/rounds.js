@@ -40,6 +40,7 @@ const schema = new mongoose.Schema({
     odds: { type: Object },
     time: { type: Date, default: new Date() },
     settled: { type: Boolean, default: false },
+    exchangeRateId: { type: Number, require: true },
 });
 
 export default (modelName) => {

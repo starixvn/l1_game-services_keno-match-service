@@ -36,7 +36,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
                     await bet.save();
                     await this.callEndGame(bet, roundId, fullTime.time, betResult);
 
-                    this.captureBetResult(bet.uid, betResult);
+                    this.captureBetResult(bet.uid, betResult, bet.rate);
                     await this.userBetResultPublisher.publish(bet.uid, betResult);
                 })
             );
