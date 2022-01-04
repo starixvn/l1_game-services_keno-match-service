@@ -16,6 +16,8 @@ export class AdminMonitorConsumer extends Core.BaseEventConsumers.AdminMonitorCo
                 firstHalf: lastRound.firstHalf,
                 fullTime: lastRound.fullTime,
                 remainingTime: this.gameData.remainingTime,
+                currencies: this.gameData.currencies,
+                exchangeRates: this.gameData.exchangeRates,
             };
 
             this.adminPublisher.publishToAdmin(socketClient, payload);
