@@ -4,6 +4,16 @@ import getBetLogsRepository from "./models/bet-logs";
 import getBetRepository from "./models/bets";
 import getRoundRepository from "./models/rounds";
 
+const hedgeBetGroups = [
+    ["fhBlue", "fhRed"],
+    ["fhOver", "fhUnder"],
+    ["fhEven", "fhOdd"],
+    ["ftBlue", "ftRed"],
+    ["ftOver", "ftUnder"],
+    ["ftEven", "ftOdd"],
+    ["liveFTEven", "liveFTOdd"],
+];
+
 export default [
     {
         id: 36,
@@ -18,6 +28,7 @@ export default [
         },
         choices,
         choicesMapper,
+        hedgeBetGroups,
         defaultBetTracks: {},
         repositories: {
             roundsRepository: getRoundRepository("kenomatch1_phien"),
@@ -40,6 +51,7 @@ export default [
         },
         choices,
         choicesMapper,
+        hedgeBetGroups,
         defaultBetTracks: {},
         repositories: {
             roundsRepository: getRoundRepository("kenomatch2_phien"),
