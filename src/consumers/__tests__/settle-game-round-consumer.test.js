@@ -7,6 +7,9 @@ import { choices, choicesMapper } from "../../constants";
 import { GameData } from "../../game-data";
 import { RoundResultPublisher } from "../../publishers";
 import { SettleGameRoundConsumer } from "../settle-game-round-consumer";
+import { decrypt } from "../../helpers/crypto-helper";
+
+jest.mock("../../helpers/crypto-helper");
 
 describe("settle game round consumer instance", () => {
     // arrange
@@ -14,11 +17,11 @@ describe("settle game round consumer instance", () => {
         id: 36,
         name: "KenoMatch1",
         durations: {
-            wholeRound: 62,
-            firstHalfPlacingBets: 54,
-            firstHalfLockingBet: 32,
-            finishFirstHalf: 27,
-            placingBets: 18,
+            wholeRound: 77,
+            firstHalfPlacingBets: 69,
+            firstHalfLockingBet: 39,
+            finishFirstHalf: 34,
+            placingBets: 25,
             lockingBet: 5,
         },
         choices,
@@ -83,7 +86,7 @@ describe("settle game round consumer instance", () => {
 
         it("should call settleBets and settle round when current round exist", async () => {
             // arrange
-            const round = { id: 1, save: jest.fn(), settled: false };
+            const round = { id: 1, save: jest.fn(), settled: false, fullTime: { encryptedResult: {} } };
             spyOn(roundsRepository, "findOne").and.callFake(() => {
                 return {
                     lean: () => {
@@ -96,6 +99,8 @@ describe("settle game round consumer instance", () => {
                 };
             });
             spyOn(consumer, "settleBets");
+            decrypt.mockReturnValueOnce(`{"blue":[],"red":[]}`);
+            consumer.definition.settle = jest.fn();
 
             // act
             await consumer.settleRound();

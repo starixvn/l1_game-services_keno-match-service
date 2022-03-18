@@ -3,6 +3,7 @@ import { Core } from "sc-game-base";
 
 import { RoundResultConsumer } from "../consumers";
 import { sumArrayNumber } from "../helpers/array-helper";
+import { decrypt } from "../helpers/crypto-helper";
 
 export class GameCron extends Core.Crons.BaseGameCron {
     /**
@@ -172,13 +173,15 @@ export class GameCron extends Core.Crons.BaseGameCron {
         const { roundId } = this.gameData;
         const currentRound = await this.roundsRepository.findOne({ id: roundId }, "id firstHalf fullTime settled").lean().exec();
         if (currentRound) {
-            const { result, settlementResult, resultKey, md5 } = currentRound.firstHalf;
+            const { encryptedResult, resultKey, md5 } = currentRound.firstHalf;
+            const result = JSON.parse(decrypt(encryptedResult));
             const totalBlue = sumArrayNumber(result.blue);
             const totalRed = sumArrayNumber(result.red);
+            const settlementResult = this.definition.settle({ totalBlue, totalRed }, true);
             const sum = totalRed + totalBlue;
             this.gameData.firstHalfResult = {
                 result,
-                resultKey,
+                resultKey: decrypt(resultKey),
                 settlementResult,
                 totalBlue,
                 totalRed,
@@ -188,7 +191,7 @@ export class GameCron extends Core.Crons.BaseGameCron {
             const liveOdds = await this.globalConfigsRepository.findOne({ type: "kenomatch_liveodds" }, "blueRed overUnder").lean().exec();
             this.gameData.liveOdds = { ...liveOdds.blueRed[totalBlue - totalRed], ...liveOdds.overUnder[sum] };
 
-            if (currentRound.fullTime && currentRound.fullTime.result) {
+            if (currentRound.fullTime && currentRound.fullTime.encryptedResult) {
                 this.gameData.remainingTime = 0;
             } else {
                 this.gameData.remainingTime = this.definition.durations.finishFirstHalf;

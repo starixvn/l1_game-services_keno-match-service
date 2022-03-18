@@ -3,7 +3,7 @@ import { GameDefinition } from "sc-multiple-games-base";
 
 import { GameData } from "../game-data";
 import { sumArrayNumber } from "../helpers/array-helper";
-import { createHashMD5, randomString } from "../helpers/crypto-helper";
+import { createHashMD5, randomString, encrypt } from "../helpers/crypto-helper";
 import { RoundResultPublisher } from "../publishers";
 
 export class RoundResultConsumer {
@@ -40,13 +40,13 @@ export class RoundResultConsumer {
         this.gameData.liveOdds = { ...liveOdds.blueRed[totalBlue - totalRed], ...liveOdds.overUnder[sum] };
         const odds = { ...this.gameData.gameConfigs.odds, ...this.gameData.liveOdds };
 
-        const resultKey = `[${totalBlue};${totalRed}]${randomString()}`;
+        const resultKey = `{${totalBlue};${totalRed}}_{#${roundId}${randomString()}}`;
         const md5 = createHashMD5(resultKey);
 
         await this.roundsRepository.create({
             id: roundId,
             odds,
-            firstHalf: { result, sum, settlementResult, resultKey, md5, time: new Date() },
+            firstHalf: { sum, md5, resultKey: encrypt(resultKey), encryptedResult: encrypt(JSON.stringify(result)), time: new Date() },
             time: new Date(),
             exchangeRateId: exchangeRates.exId,
         });
@@ -73,19 +73,19 @@ export class RoundResultConsumer {
         const totalBlue = sumArrayNumber(fullTimeResult.blue) + firstHalfResult.totalBlue;
         const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalRed;
         const sum = totalBlue + totalRed;
-        const settlementResult = this.definition.settle({ totalBlue, totalRed }, false);
-        const resultKey = `[${totalBlue};${totalRed}]${randomString()}`;
+        const resultKey = `{${totalBlue};${totalRed}}_{#${roundId}${randomString()}}`;
         const md5 = createHashMD5(resultKey);
         this.gameData.currentMD5 = md5;
         const update = {
             fullTime: {
-                result: fullTimeResult,
                 sum,
-                settlementResult,
-                resultKey,
                 md5,
+                resultKey: encrypt(resultKey),
+                encryptedResult: encrypt(JSON.stringify(fullTimeResult)),
                 time: new Date(),
             },
+            "firstHalf.result": firstHalfResult.result,
+            "firstHalf.settlementResult": firstHalfResult.settlementResult,
         };
         await this.roundsRepository.updateOne(
             {
