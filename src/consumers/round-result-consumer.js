@@ -46,7 +46,7 @@ export class RoundResultConsumer {
         await this.roundsRepository.create({
             id: roundId,
             odds,
-            firstHalf: { sum, md5, resultKey: encrypt(resultKey), encryptedResult: encrypt(JSON.stringify(result)), time: new Date() },
+            firstHalf: { md5, resultKey: encrypt(resultKey), encryptedResult: encrypt(JSON.stringify(result)), time: new Date() },
             time: new Date(),
             exchangeRateId: exchangeRates.exId,
         });
@@ -72,13 +72,11 @@ export class RoundResultConsumer {
 
         const totalBlue = sumArrayNumber(fullTimeResult.blue) + firstHalfResult.totalBlue;
         const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalRed;
-        const sum = totalBlue + totalRed;
         const resultKey = `{${totalBlue};${totalRed}}_{#${roundId}${randomString()}}`;
         const md5 = createHashMD5(resultKey);
         this.gameData.currentMD5 = md5;
         const update = {
             fullTime: {
-                sum,
                 md5,
                 resultKey: encrypt(resultKey),
                 encryptedResult: encrypt(JSON.stringify(fullTimeResult)),
@@ -86,6 +84,7 @@ export class RoundResultConsumer {
             },
             "firstHalf.result": firstHalfResult.result,
             "firstHalf.settlementResult": firstHalfResult.settlementResult,
+            "firstHalf.sum": firstHalfResult.totalBlue + firstHalfResult.totalRed,
         };
         await this.roundsRepository.updateOne(
             {

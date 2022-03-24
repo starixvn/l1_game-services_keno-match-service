@@ -14,11 +14,12 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
 
             const fullTimeResult = JSON.parse(decrypt(round.fullTime.encryptedResult));
             const totalBlue = sumArrayNumber(fullTimeResult.blue) + firstHalfResult.totalBlue;
-            const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalBlue;
+            const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalRed;
             const fullTimeSettlementResult = this.definition.settle({ totalBlue, totalRed }, false);
             const fullTime = {
                 result: fullTimeResult,
                 settlementResult: fullTimeSettlementResult,
+                sum: totalBlue + totalRed,
                 ...round.fullTime,
             };
 
