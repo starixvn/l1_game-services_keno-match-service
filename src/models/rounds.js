@@ -21,13 +21,22 @@ const resultSchema = new mongoose.Schema(
     { _id: false }
 );
 
+const encryptedSchema = new mongoose.Schema(
+    {
+        iv: { type: String, required: true },
+        content: { type: String, required: true },
+    },
+    { _id: false }
+);
+
 const halfSchema = new mongoose.Schema(
     {
         result: resultSchema,
         sum: { type: Number },
         settlementResult: settlementResultSchema,
         md5: { type: String, require: true },
-        resultKey: { type: String, require: true },
+        resultKey: encryptedSchema,
+        encryptedResult: encryptedSchema,
         time: { type: Date, default: new Date() },
     },
     { _id: false }

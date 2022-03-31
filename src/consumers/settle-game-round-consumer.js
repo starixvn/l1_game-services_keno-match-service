@@ -1,17 +1,30 @@
 import { Core } from "sc-game-base";
 
 import { blueAndRedChoices, firstHalfChoiceMapper, fullTimeChoiceMapper } from "../constants";
-import { sumArrayObject } from "../helpers/array-helper";
+import { sumArrayObject, sumArrayNumber } from "../helpers/array-helper";
+import { decrypt } from "../helpers/crypto-helper";
 
 export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameRoundConsumer {
     async settleRound() {
         const round = await this.roundsRepository.findOne({ id: this.gameData.roundId }).lean().exec();
 
         if (round) {
+            const { firstHalfResult } = this.gameData;
             this.gameData.roundId = round.id + 1;
 
-            await this.settleBets(round);
-            await this.roundsRepository.updateOne({ id: round.id }, { settled: true });
+            const fullTimeResult = JSON.parse(decrypt(round.fullTime.encryptedResult));
+            const totalBlue = sumArrayNumber(fullTimeResult.blue) + firstHalfResult.totalBlue;
+            const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalRed;
+            const fullTimeSettlementResult = this.definition.settle({ totalBlue, totalRed }, false);
+            const fullTime = {
+                result: fullTimeResult,
+                settlementResult: fullTimeSettlementResult,
+                sum: totalBlue + totalRed,
+                ...round.fullTime,
+            };
+
+            await this.settleBets({ ...round, fullTime });
+            await this.roundsRepository.updateOne({ id: round.id }, { settled: true, fullTime });
         }
     }
 
@@ -45,7 +58,7 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
         this.roundResultPublisher.publishRoundResult({
             result: fullTime.result,
             settlementResult: fullTime.settlementResult,
-            resultKey: fullTime.resultKey,
+            resultKey: decrypt(fullTime.resultKey),
             roundId,
         });
     }

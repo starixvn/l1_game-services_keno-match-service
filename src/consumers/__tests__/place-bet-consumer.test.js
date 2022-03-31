@@ -12,11 +12,11 @@ describe("Place Bet consumer instance", () => {
         id: 36,
         name: "KenoMatch1",
         durations: {
-            wholeRound: 62,
-            firstHalfPlacingBets: 54,
-            firstHalfLockingBet: 32,
-            finishFirstHalf: 27,
-            placingBets: 18,
+            wholeRound: 77,
+            firstHalfPlacingBets: 69,
+            firstHalfLockingBet: 39,
+            finishFirstHalf: 34,
+            placingBets: 25,
             lockingBet: 5,
         },
         choices,
@@ -87,7 +87,7 @@ describe("Place Bet consumer instance", () => {
             });
         });
 
-        [60, 30, 4].forEach((remainingTime) => {
+        [70, 38, 4].forEach((remainingTime) => {
             it(`should return placeBetNextRound when placing bet in invalid time (${remainingTime})`, () => {
                 // arrange
                 gameData.remainingTime = remainingTime;

@@ -7,6 +7,12 @@ import { choices, choicesMapper } from "../../constants";
 import { RoundResultConsumer, SettleGameRoundConsumer } from "../../consumers";
 import { GameData } from "../../game-data";
 import { GameCron } from "../game-cron";
+import { decrypt } from "../../helpers/crypto-helper";
+import { sumArrayNumber } from "../../helpers/array-helper";
+import { when } from "jest-when";
+
+jest.mock("../../helpers/array-helper");
+jest.mock("../../helpers/crypto-helper");
 
 describe("game cron instance", () => {
     const definition = {
@@ -14,11 +20,11 @@ describe("game cron instance", () => {
         name: "KenoMatch1",
         configName: "kenomatch1",
         durations: {
-            wholeRound: 62,
-            firstHalfPlacingBets: 54,
-            firstHalfLockingBet: 32,
-            finishFirstHalf: 27,
-            placingBets: 18,
+            wholeRound: 77,
+            firstHalfPlacingBets: 69,
+            firstHalfLockingBet: 39,
+            finishFirstHalf: 34,
+            placingBets: 25,
             lockingBet: 5,
         },
         choices,
@@ -267,6 +273,227 @@ describe("game cron instance", () => {
 
             // arrange
             expect(gameData.roundId).toStrictEqual(1);
+        });
+    });
+
+    describe("initGameData", () => {
+        beforeEach(() => {
+            gameData.roundId = 2;
+        });
+        it("should call find round", async () => {
+            // arrange
+            const roundsRepositoryNew = stubMongooseModelStupidly(mongoose.Model);
+            const cron = new GameCron({
+                definition,
+                gameData,
+                roundsRepository: roundsRepositoryNew,
+            });
+
+            // act
+            await cron.initGameData();
+
+            // assert
+            expect(roundsRepositoryNew.findOne({ id: gameData.roundId }, "id firstHalf fullTime settled").lean().exec).toHaveBeenCalled();
+        });
+
+        describe("when not found round", () => {
+            it("should not call handleFinishFistHalf", async () => {
+                // arrange
+                const roundsRepositoryNew = stubMongooseModelStupidly(mongoose.Model);
+                roundsRepositoryNew
+                    .findOne({ id: gameData.roundId }, "id firstHalf fullTime settled")
+                    .lean()
+                    .exec.mockReturnValueOnce(null);
+                const roundResultConsumerNew = { handleFinishFistHalf: jest.fn() };
+                const cron = new GameCron({
+                    definition,
+                    gameData,
+                    roundsRepository: roundsRepositoryNew,
+                    roundResultConsumer: roundResultConsumerNew,
+                });
+
+                // act
+                await cron.initGameData();
+
+                // assert
+                expect(roundResultConsumerNew.handleFinishFistHalf).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("when exist round", () => {
+            // arrange
+            const round = {
+                firstHalf: {
+                    md5: "md5String",
+                    resultKey: { iv: "asd", content: "encryptedResultKey" },
+                    encryptedResult: { iv: "dsa", content: "encryptedResult" },
+                },
+            };
+            const result = { blue: [1, 2, 3, 4, 5], red: [6, 7, 8, 9, 10] };
+
+            when(decrypt)
+                .calledWith(round.firstHalf.encryptedResult)
+                .mockReturnValue(JSON.stringify(result))
+                .calledWith(round.firstHalf.resultKey)
+                .mockReturnValue("resultKey");
+            when(sumArrayNumber).calledWith(result.blue).mockReturnValue(15).calledWith(result.red).mockReturnValue(40);
+
+            beforeEach(() => {
+                definition.settle = jest.fn();
+                globalConfigsRepository
+                    .findOne({ type: "kenomatch_liveodds" }, "blueRed overUnder")
+                    .lean()
+                    .exec.mockReturnValueOnce({
+                        blueRed: { [-25]: { liveFTBlue: 1.97, liveFTRed: 1.97 } },
+                        overUnder: { 55: { liveFTOver: 11, liveFTUnder: 1.04 } },
+                    });
+            });
+
+            it("should call get settlement result with expected param", async () => {
+                // arrange
+                roundsRepository.findOne({ id: gameData.roundId }, "id firstHalf fullTime settled").lean().exec.mockReturnValueOnce(round);
+                const cron = new GameCron({
+                    definition,
+                    gameData,
+                    roundsRepository,
+                    roundResultConsumer,
+                    globalConfigsRepository,
+                });
+
+                // act
+                await cron.initGameData();
+
+                // assert
+                expect(definition.settle).toHaveBeenCalledWith({ totalBlue: 15, totalRed: 40 }, true);
+            });
+
+            it("should store first half result in game data", async () => {
+                // arrange
+                roundsRepository.findOne({ id: gameData.roundId }, "id firstHalf fullTime settled").lean().exec.mockReturnValueOnce(round);
+                definition.settle = jest.fn({ totalBlue: 15, totalRed: 40 }, true).mockReturnValue({ red: true, blue: false });
+                const cron = new GameCron({
+                    definition,
+                    gameData,
+                    roundsRepository,
+                    roundResultConsumer,
+                    globalConfigsRepository,
+                });
+
+                // act
+                await cron.initGameData();
+
+                // assert
+                expect(gameData.firstHalfResult).toStrictEqual({
+                    result,
+                    resultKey: "resultKey",
+                    settlementResult: { red: true, blue: false },
+                    totalBlue: 15,
+                    totalRed: 40,
+                    roundId: gameData.roundId,
+                });
+            });
+
+            it("should store md5 in game data", async () => {
+                // arrange
+                roundsRepository.findOne({ id: gameData.roundId }, "id firstHalf fullTime settled").lean().exec.mockReturnValueOnce(round);
+                const cron = new GameCron({
+                    definition,
+                    gameData,
+                    roundsRepository,
+                    roundResultConsumer,
+                    globalConfigsRepository,
+                });
+
+                // act
+                await cron.initGameData();
+
+                // assert
+                expect(gameData.currentMD5).toBe(round.firstHalf.md5);
+            });
+
+            it("should store live odds in game data", async () => {
+                // arrange
+                roundsRepository.findOne({ id: gameData.roundId }, "id firstHalf fullTime settled").lean().exec.mockReturnValueOnce(round);
+                const cron = new GameCron({
+                    definition,
+                    gameData,
+                    roundsRepository,
+                    roundResultConsumer,
+                    globalConfigsRepository,
+                });
+
+                // act
+                await cron.initGameData();
+
+                // assert
+                expect(gameData.liveOdds).toStrictEqual({ liveFTBlue: 1.97, liveFTRed: 1.97, liveFTOver: 11, liveFTUnder: 1.04 });
+            });
+
+            it("should call handleFinishFirstHalf", async () => {
+                // arrange
+                roundsRepository.findOne({ id: gameData.roundId }, "id firstHalf fullTime settled").lean().exec.mockReturnValueOnce(round);
+                const roundResultConsumerNew = { handleFinishFistHalf: jest.fn() };
+                const cron = new GameCron({
+                    definition,
+                    gameData,
+                    roundsRepository,
+                    roundResultConsumer: roundResultConsumerNew,
+                    globalConfigsRepository,
+                });
+
+                // act
+                await cron.initGameData();
+
+                // assert
+                expect(roundResultConsumerNew.handleFinishFistHalf).toHaveBeenCalled();
+            });
+
+            describe("when have result fulltime", () => {
+                it("should set remaining time equal 0", async () => {
+                    // arrange
+                    const currentRound = { ...round, fullTime: { encryptedResult: { iv: "123", content: "result" } } };
+                    roundsRepository
+                        .findOne({ id: gameData.roundId }, "id firstHalf fullTime settled")
+                        .lean()
+                        .exec.mockReturnValueOnce(currentRound);
+                    const cron = new GameCron({
+                        definition,
+                        gameData,
+                        roundsRepository,
+                        roundResultConsumer,
+                        globalConfigsRepository,
+                    });
+
+                    // act
+                    await cron.initGameData();
+
+                    // assert
+                    expect(gameData.remainingTime).toBe(0);
+                });
+            });
+
+            describe("when not result fulltime", () => {
+                it("should set remaining time equal durations finishFirstHalf", async () => {
+                    // arrange
+                    roundsRepository
+                        .findOne({ id: gameData.roundId }, "id firstHalf fullTime settled")
+                        .lean()
+                        .exec.mockReturnValueOnce(round);
+                    const cron = new GameCron({
+                        definition,
+                        gameData,
+                        roundsRepository,
+                        roundResultConsumer,
+                        globalConfigsRepository,
+                    });
+
+                    // act
+                    await cron.initGameData();
+
+                    // assert
+                    expect(gameData.remainingTime).toBe(definition.durations.finishFirstHalf);
+                });
+            });
         });
     });
 });

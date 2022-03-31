@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 import { RoundQuery } from "..";
 
+jest.mock("../../helpers/crypto-helper.js");
 describe("round query test", () => {
     /** @type {mongoose.Model}*/
     const roundsRepository = stubMongooseModelStupidly(mongoose.Model);
@@ -16,7 +17,7 @@ describe("round query test", () => {
     describe("getList_", () => {
         it("always_calls roundsRepository", async () => {
             // arrange
-            const rounds = [{ id: 1 }];
+            const rounds = [{ id: 1, firstHalf: {}, fullTime: {} }];
             roundsRepository.find().lean().exec.mockReturnValueOnce(rounds);
 
             // act
