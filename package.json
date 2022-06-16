@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "random-js": "^2.1.0",
-        "sc-multiple-games-base": "1.5.3-beta.0"
+        "sc-multiple-games-base": "1.5.3-beta.1"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.12.11",
