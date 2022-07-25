@@ -1,6 +1,6 @@
 import { Core } from "sc-game-base";
 
-import { KenoMatchApp } from "../src/app";
+import { KenoMatchApp } from "../../src/app";
 
 describe("Keno match app instance", () => {
     const app = new KenoMatchApp("Keno Match", {});

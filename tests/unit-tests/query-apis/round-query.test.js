@@ -1,9 +1,9 @@
 import { stubMongooseModelStupidly } from "jest-micro-auto-stub";
 import mongoose from "mongoose";
 
-import { RoundQuery } from "..";
+import { RoundQuery } from "../../../src/query-apis";
 
-jest.mock("../../helpers/crypto-helper.js");
+jest.mock("../../../src/helpers/crypto-helper.js");
 describe("round query test", () => {
     /** @type {mongoose.Model}*/
     const roundsRepository = stubMongooseModelStupidly(mongoose.Model);

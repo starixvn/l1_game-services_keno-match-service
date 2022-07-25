@@ -2,9 +2,9 @@ import { stub } from "jest-micro-auto-stub";
 import { helpers } from "sc-common";
 import { Core } from "sc-game-base";
 
-import { choices, choicesMapper, liveChoices, preLiveChoices } from "../../constants";
-import { GameData } from "../../game-data";
-import { PlaceBetConsumer } from "../place-bet-consumer";
+import { choices, choicesMapper, liveChoices, preLiveChoices } from "../../../src/constants";
+import { GameData } from "../../../src/game-data";
+import { PlaceBetConsumer } from "../../../src/consumers/place-bet-consumer";
 
 describe("Place Bet consumer instance", () => {
     // arrange

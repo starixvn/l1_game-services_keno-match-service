@@ -1,4 +1,4 @@
-import { getSettlementResult } from "../result-helper";
+import { getSettlementResult } from "../../../src/helpers/result-helper";
 
 describe("getSettlementResult test", () => {
     it("when totalRed greater than totalBlue, should return red is true", () => {

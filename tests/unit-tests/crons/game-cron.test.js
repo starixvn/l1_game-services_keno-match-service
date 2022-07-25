@@ -3,16 +3,16 @@ import mongoose from "mongoose";
 import { logger } from "sc-common";
 import { Core } from "sc-game-base";
 
-import { choices, choicesMapper } from "../../constants";
-import { RoundResultConsumer, SettleGameRoundConsumer } from "../../consumers";
-import { GameData } from "../../game-data";
-import { GameCron } from "../game-cron";
-import { decrypt } from "../../helpers/crypto-helper";
-import { sumArrayNumber } from "../../helpers/array-helper";
+import { choices, choicesMapper } from "../../../src/constants";
+import { RoundResultConsumer, SettleGameRoundConsumer } from "../../../src/consumers";
+import { GameData } from "../../../src/game-data";
+import { GameCron } from "../../../src/crons/game-cron";
+import { decrypt } from "../../../src/helpers/crypto-helper";
+import { sumArrayNumber } from "../../../src/helpers/array-helper";
 import { when } from "jest-when";
 
-jest.mock("../../helpers/array-helper");
-jest.mock("../../helpers/crypto-helper");
+jest.mock("../../../src/helpers/array-helper");
+jest.mock("../../../src/helpers/crypto-helper");
 
 describe("game cron instance", () => {
     const definition = {

@@ -2,10 +2,10 @@ import { stub, stubMongooseModelStupidly } from "jest-micro-auto-stub";
 import mongoose from "mongoose";
 import { Core } from "sc-game-base";
 
-import { choices, choicesMapper } from "../../constants";
-import { InGameConsumer } from "../../consumers";
-import { GameData } from "../../game-data";
-import { RoundQuery } from "../../query-apis";
+import { choices, choicesMapper } from "../../../src/constants";
+import { InGameConsumer } from "../../../src/consumers";
+import { GameData } from "../../../src/game-data";
+import { RoundQuery } from "../../../src/query-apis";
 
 describe("in game consumer instance", () => {
     const definition = {

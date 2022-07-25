@@ -1,10 +1,10 @@
 import { stubMongooseModelStupidly } from "jest-micro-auto-stub";
 import mongoose from "mongoose";
 
-import { HistoryQuery } from "../history-query";
-import { RoundQuery } from "../round-query";
+import { HistoryQuery } from "../../../src/query-apis/history-query";
+import { RoundQuery } from "../../../src/query-apis/round-query";
 
-jest.mock("../round-query");
+jest.mock("../../../src/query-apis/round-query");
 
 describe("history quer test", () => {
     const roundQuery = new RoundQuery();
@@ -17,7 +17,7 @@ describe("history quer test", () => {
         it("should return empty when page < 1", async () => {
             const historyQuery = new HistoryQuery(roundQuery, betsRepository, betLogsRepository);
 
-            var actualResult = await historyQuery.queryHistory({}, 0, 10);
+            let actualResult = await historyQuery.queryHistory({}, 0, 10);
 
             expect(actualResult).toBeEmpty();
         });
@@ -43,7 +43,7 @@ describe("history quer test", () => {
                     { uid: 1, phien: 1, choice: "ftRed" },
                 ]);
 
-            var actualResult = await historyQuery.queryHistory({ UID: 1 }, 1, 10);
+            let actualResult = await historyQuery.queryHistory({ UID: 1 }, 1, 10);
 
             expect(actualResult).not.toBeEmpty();
             expect(actualResult.history.page).toEqual(1);

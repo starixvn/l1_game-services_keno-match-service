@@ -1,6 +1,6 @@
 import { MultipleGamesContainerRegistry } from "sc-multiple-games-base";
 
-import KenoMatchContainerRegistry from "../src/keno-match-container-registry";
+import KenoMatchContainerRegistry from "../../src/keno-match-container-registry";
 
 describe("keno-match-container-registry", () => {
     describe("extends", () => {

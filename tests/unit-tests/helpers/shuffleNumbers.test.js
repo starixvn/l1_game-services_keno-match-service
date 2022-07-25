@@ -1,4 +1,4 @@
-import generateResult from "../shuffleNumbers";
+import generateResult from "../../../src/helpers/shuffleNumbers";
 
 describe("shuffleNumbers", () => {
     const testCases = [{ randomMode: undefined }, { randomMode: 1 }, { randomMode: 2 }, { randomMode: 3 }];

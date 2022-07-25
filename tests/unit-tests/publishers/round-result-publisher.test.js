@@ -1,5 +1,5 @@
-import { GameData } from "../../game-data";
-import { RoundResultPublisher } from "../round-result-publisher";
+import { GameData } from "../../../src/game-data";
+import { RoundResultPublisher } from "../../../src/publishers/round-result-publisher";
 
 describe("round result publisher instance", () => {
     const gameData = new GameData();

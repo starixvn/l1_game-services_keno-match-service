@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 import { Core } from "sc-game-base";
 import AdminPublisher from "sc-game-base/src/core/event-publishers/admin-publisher";
 
-import { GameData } from "../../game-data";
-import { AdminMonitorConsumer } from "../admin-monitor-consumer";
+import { GameData } from "../../../src/game-data";
+import { AdminMonitorConsumer } from "../../../src/consumers/admin-monitor-consumer";
 
 jest.mock("sc-game-base/src/core/event-publishers/admin-publisher");
 

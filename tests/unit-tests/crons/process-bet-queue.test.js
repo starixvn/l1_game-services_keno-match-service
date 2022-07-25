@@ -4,9 +4,9 @@ import { helpers, logger } from "sc-common";
 import { Core } from "sc-game-base";
 import BaseMetrics from "sc-game-base/src/core/base-metrics";
 
-import { choices, choicesMapper } from "../../constants";
-import { GameData } from "../../game-data";
-import { ProcessBetQueue } from "../process-bet-queue";
+import { choices, choicesMapper } from "../../../src/constants";
+import { GameData } from "../../../src/game-data";
+import { ProcessBetQueue } from "../../../src/crons/process-bet-queue";
 
 describe("process bet queue instance", () => {
     const definition = {

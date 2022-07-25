@@ -3,16 +3,16 @@ import mongoose from "mongoose";
 import { logger } from "sc-common";
 import { Core } from "sc-game-base";
 
-import { choices, choicesMapper } from "../../constants";
-import { GameData } from "../../game-data";
-import { RoundResultPublisher } from "../../publishers";
-import { SettleGameRoundConsumer } from "../settle-game-round-consumer";
-import { decrypt } from "../../helpers/crypto-helper";
+import { choices, choicesMapper } from "../../../src/constants";
+import { GameData } from "../../../src/game-data";
+import { RoundResultPublisher } from "../../../src/publishers";
+import { SettleGameRoundConsumer } from "../../../src/consumers/settle-game-round-consumer";
+import { decrypt } from "../../../src/helpers/crypto-helper";
 import { when } from "jest-when";
-import { sumArrayNumber, sumArrayObject } from "../../helpers/array-helper";
+import { sumArrayNumber, sumArrayObject } from "../../../src/helpers/array-helper";
 
-jest.mock("../../helpers/crypto-helper");
-jest.mock("../../helpers/array-helper");
+jest.mock("../../../src/helpers/crypto-helper");
+jest.mock(".../../../src/helpers/array-helper");
 
 describe("settle game round consumer instance", () => {
     // arrange
