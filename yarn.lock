@@ -3284,6 +3284,13 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
+d3-array@^3.2.0:
+  version "3.2.0"
+  resolved "http://npm.lumigame.com/d3-array/-/d3-array-3.2.0.tgz#15bf96cd9b7333e02eb8de8053d78962eafcff14"
+  integrity sha512-3yXFQo0oG3QCxbF06rMPFyGRMGJNS7NvsV1+2joOjbBE+9xvWQ8+GcMJAjRCzw06zQ3/arXeJgbPYcjUCuC+3g==
+  dependencies:
+    internmap "1 - 2"
+
 dargs@^7.0.0:
   version "7.0.0"
   resolved "http://npm.lumigame.com/dargs/-/dargs-7.0.0.tgz#04015c41de0bcb69ec84050f3d9be0caf8d6d5cc"
@@ -4769,6 +4776,11 @@ install@^0.13.0:
   version "0.13.0"
   resolved "http://npm.lumigame.com/install/-/install-0.13.0.tgz#6af6e9da9dd0987de2ab420f78e60d9c17260776"
   integrity sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==
+
+"internmap@1 - 2":
+  version "2.0.3"
+  resolved "http://npm.lumigame.com/internmap/-/internmap-2.0.3.tgz#6685f23755e43c524e251d29cbc97248e3061009"
+  integrity sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==
 
 into-stream@^6.0.0:
   version "6.0.0"

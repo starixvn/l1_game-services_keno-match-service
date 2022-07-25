@@ -24,17 +24,19 @@ export class RoundResultConsumer {
 
     async generateFirstHalfResult() {
         const resultFromAdmin = this.gameData.settlementResultFromAdmin;
-        const { roundId, exchangeRates } = this.gameData;
+        const { roundId, exchangeRates, gameConfigs } = this.gameData;
+        const { randomMode } = gameConfigs;
+        const { generateResult, settle } = this.definition;
 
         const result =
             roundId === resultFromAdmin.roundId
                 ? resultFromAdmin.result.firstHalf.result
-                : { blue: this.definition.generateResult(), red: this.definition.generateResult() };
+                : { blue: generateResult(randomMode), red: generateResult(randomMode) };
 
         const totalBlue = sumArrayNumber(result.blue);
         const totalRed = sumArrayNumber(result.red);
         const sum = totalBlue + totalRed;
-        const settlementResult = this.definition.settle({ totalBlue, totalRed }, true);
+        const settlementResult = settle({ totalBlue, totalRed }, true);
 
         const liveOdds = await this.globalConfigsRepository.findOne({ type: "kenomatch_liveodds" }, "blueRed overUnder").lean().exec();
         this.gameData.liveOdds = { ...liveOdds.blueRed[totalBlue - totalRed], ...liveOdds.overUnder[sum] };
@@ -63,12 +65,18 @@ export class RoundResultConsumer {
     }
 
     async generateFullTimeResult() {
-        const { roundId, firstHalfResult, settlementResultFromAdmin: resultFromAdmin } = this.gameData;
+        const { roundId, firstHalfResult, settlementResultFromAdmin: resultFromAdmin, gameConfigs } = this.gameData;
+        const { randomMode } = gameConfigs;
         const result = firstHalfResult.result;
+        const { generateResult } = this.definition;
+
         const fullTimeResult =
             roundId === resultFromAdmin.roundId
                 ? resultFromAdmin.result.fullTime.result
-                : { blue: this.definition.generateResult(result?.blue), red: this.definition.generateResult(result?.red) };
+                : {
+                      blue: generateResult(randomMode, result?.blue),
+                      red: generateResult(randomMode, result?.red),
+                  };
 
         const totalBlue = sumArrayNumber(fullTimeResult.blue) + firstHalfResult.totalBlue;
         const totalRed = sumArrayNumber(fullTimeResult.red) + firstHalfResult.totalRed;

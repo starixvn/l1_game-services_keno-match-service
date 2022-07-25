@@ -20,6 +20,8 @@
         "indent": 4
     },
     "dependencies": {
+        "d3-array": "^3.2.0",
+        "lodash": "^4.17.21",
         "random-js": "^2.1.0",
         "sc-multiple-games-base": "1.5.3"
     },

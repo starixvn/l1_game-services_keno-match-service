@@ -1,54 +1,13 @@
 import generateResult from "../shuffleNumbers";
 
-const chanceStub = {
-    naturalResult: 10,
-    picksetResult: [],
-    uniqueResult: [],
-    natural: () => {
-        return chanceStub.naturalResult;
-    },
-    pickset: () => {
-        return chanceStub.picksetResult;
-    },
-    unique: () => {
-        return chanceStub.uniqueResult;
-    },
-};
-
-jest.mock("chance", () => {
-    return function () {
-        return chanceStub;
-    };
-});
-
 describe("shuffleNumbers", () => {
-    describe("generateResult", () => {
-        const testCases = [
-            {
-                natural: 0,
-                expectedValue: [],
-            },
-            {
-                natural: 1,
-                expectedValue: [1],
-            },
-            {
-                natural: 2,
-                expectedValue: [1],
-            },
-        ];
+    const testCases = [{ randomMode: undefined }, { randomMode: 1 }, { randomMode: 2 }, { randomMode: 3 }];
+    it.each(testCases)("should return 20 numbers having value between 1 and 80", ({ randomMode }) => {
+        const numberOfPicked = 10,
+            numberOfSeeds = 80;
+        const actualResult = generateResult(randomMode, numberOfPicked, numberOfSeeds);
 
-        it.each(testCases)("should return correct value", (testCase) => {
-            // arrange
-            chanceStub.naturalResult = testCase.natural;
-            const numberOfPicked = 1;
-            const numberOfSeeds = 1;
-
-            // act
-            const actualValue = generateResult(numberOfPicked, numberOfSeeds);
-
-            //assert
-            expect(actualValue).toStrictEqual(testCase.expectedValue);
-        });
+        expect(actualResult.length).toEqual(numberOfPicked);
+        expect(actualResult).toSatisfyAll((number) => number >= 1 && number <= numberOfSeeds);
     });
 });

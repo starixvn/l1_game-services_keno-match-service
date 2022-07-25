@@ -415,6 +415,7 @@ describe("Round result consumer instance", () => {
 
         it("should call generateResult when not set result from admin", async () => {
             gameData.roundId = 2;
+            gameData.gameConfigs.randomMode = 2;
             gameData.settlementResultFromAdmin = {};
             gameData.firstHalfResult = {
                 result: { blue: [1, 2, 3, 4, 5], red: [6, 7, 8, 9, 10] },
@@ -432,21 +433,22 @@ describe("Round result consumer instance", () => {
 
             // assert
             expect(definition.generateResult).toHaveBeenCalledTimes(2);
-            expect(definition.generateResult).toHaveBeenNthCalledWith(1, gameData.firstHalfResult.result.blue);
-            expect(definition.generateResult).toHaveBeenNthCalledWith(2, gameData.firstHalfResult.result.red);
+            expect(definition.generateResult).toHaveBeenNthCalledWith(1, 2, gameData.firstHalfResult.result.blue);
+            expect(definition.generateResult).toHaveBeenNthCalledWith(2, 2, gameData.firstHalfResult.result.red);
         });
 
         it("should call create hash md5 with expected", async () => {
             gameData.roundId = 2;
+            gameData.gameConfigs.randomMode = 2;
             gameData.firstHalfResult = {
                 result: { blue: [1, 2, 3, 4, 5], red: [6, 7, 8, 9, 10] },
                 totalBlue: 15,
                 totalRed: 40,
             };
             when(definition.generateResult)
-                .calledWith(gameData.firstHalfResult.result.blue)
+                .calledWith(2, gameData.firstHalfResult.result.blue)
                 .mockReturnValue([11, 12, 13, 14, 15])
-                .calledWith(gameData.firstHalfResult.result.red)
+                .calledWith(2, gameData.firstHalfResult.result.red)
                 .mockReturnValue([16, 17, 18, 19, 20]);
             when(sumArrayNumber).calledWith([11, 12, 13, 14, 15]).mockReturnValue(65).calledWith([16, 17, 18, 19, 20]).mockReturnValue(90);
             const roundResultConsumer = new RoundResultConsumer(
@@ -468,15 +470,16 @@ describe("Round result consumer instance", () => {
 
         it("should store md5 in game data", async () => {
             gameData.roundId = 2;
+            gameData.gameConfigs.randomMode = 2;
             gameData.firstHalfResult = {
                 result: { blue: [1, 2, 3, 4, 5], red: [6, 7, 8, 9, 10] },
                 totalBlue: 15,
                 totalRed: 40,
             };
             when(definition.generateResult)
-                .calledWith(gameData.firstHalfResult.result.blue)
+                .calledWith(2, gameData.firstHalfResult.result.blue)
                 .mockReturnValue([11, 12, 13, 14, 15])
-                .calledWith(gameData.firstHalfResult.result.red)
+                .calledWith(2, gameData.firstHalfResult.result.red)
                 .mockReturnValue([16, 17, 18, 19, 20]);
             when(sumArrayNumber).calledWith([11, 12, 13, 14, 15]).mockReturnValue(65).calledWith([16, 17, 18, 19, 20]).mockReturnValue(90);
             const roundResultConsumer = new RoundResultConsumer(
@@ -499,6 +502,7 @@ describe("Round result consumer instance", () => {
 
         it("should update round - full time and result settlement result of first half", async () => {
             gameData.roundId = 2;
+            gameData.gameConfigs.randomMode = 2;
             gameData.firstHalfResult = {
                 result: { blue: [1, 2, 3, 4, 5], red: [6, 7, 8, 9, 10] },
                 settlementResult: { red: true, blue: false },
@@ -506,9 +510,9 @@ describe("Round result consumer instance", () => {
                 totalRed: 40,
             };
             when(definition.generateResult)
-                .calledWith(gameData.firstHalfResult.result.blue)
+                .calledWith(2, gameData.firstHalfResult.result.blue)
                 .mockReturnValue([11, 12, 13, 14, 15])
-                .calledWith(gameData.firstHalfResult.result.red)
+                .calledWith(2, gameData.firstHalfResult.result.red)
                 .mockReturnValue([16, 17, 18, 19, 20]);
             when(sumArrayNumber).calledWith([11, 12, 13, 14, 15]).mockReturnValue(65).calledWith([16, 17, 18, 19, 20]).mockReturnValue(90);
             randomString.mockReturnValue("salt");
@@ -549,15 +553,16 @@ describe("Round result consumer instance", () => {
 
         it("should publish md5", async () => {
             gameData.roundId = 2;
+            gameData.gameConfigs.randomMode = 2;
             gameData.firstHalfResult = {
                 result: { blue: [1, 2, 3, 4, 5], red: [6, 7, 8, 9, 10] },
                 totalBlue: 15,
                 totalRed: 40,
             };
             when(definition.generateResult)
-                .calledWith(gameData.firstHalfResult.result.blue)
+                .calledWith(2, gameData.firstHalfResult.result.blue)
                 .mockReturnValue([11, 12, 13, 14, 15])
-                .calledWith(gameData.firstHalfResult.result.red)
+                .calledWith(2, gameData.firstHalfResult.result.red)
                 .mockReturnValue([16, 17, 18, 19, 20]);
             when(sumArrayNumber).calledWith([11, 12, 13, 14, 15]).mockReturnValue(65).calledWith([16, 17, 18, 19, 20]).mockReturnValue(90);
             const roundResultPublisherNew = stub(RoundResultPublisher);
