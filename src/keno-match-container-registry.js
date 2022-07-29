@@ -1,9 +1,8 @@
 import { asClass, asValue } from "awilix";
-import { GameDefinition, MultipleGamesContainerRegistry } from "sc-multiple-games-base";
+import { MultipleGamesContainerRegistry } from "sc-multiple-games-base";
 
 import { AdminMonitorConsumer, InGameConsumer, PlaceBetConsumer, RoundResultConsumer, SettleGameRoundConsumer } from "./consumers";
 import { GameCron, ProcessBetQueue } from "./crons";
-import { GameData } from "./game-data";
 import globalConfigs from "./models/global-configs";
 import { RoundResultPublisher } from "./publishers";
 import { HistoryQuery, RoundQuery } from "./query-apis";

@@ -45,7 +45,7 @@ function run() {
         },
     };
 
-    const randomMode = 1;
+    const randomMode = 3;
 
     for (let index = 0; index < totalRounds; index++) {
         const firstHalfResult = { blue: generateResult(randomMode), red: generateResult(randomMode) };
@@ -118,7 +118,7 @@ function run() {
     }
     console.log(`======== Run ${totalRounds} rounds ========`);
 
-    console.log(stats);
+    console.log(JSON.stringify(stats));
     console.log(`Longest streaks (>=${longestStreak}): `);
     console.log(JSON.stringify(streaks));
 }

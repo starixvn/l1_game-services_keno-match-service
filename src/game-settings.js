@@ -4,7 +4,7 @@ import getBetLogsRepository from "./models/bet-logs";
 import getBetRepository from "./models/bets";
 import getRoundRepository from "./models/rounds";
 
-const hedgeBetGroups = [
+export const hedgeBetGroups = [
     ["fhBlue", "fhRed"],
     ["fhOver", "fhUnder"],
     ["fhEven", "fhOdd"],
