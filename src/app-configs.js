@@ -2,8 +2,8 @@ export default {
     hostingPort: 8089,
     apiSettings: {
         enabledApi: true,
-        apiUrl: "http://localhost:8868",
-        authUrl: "http://localhost:8898",
+        apiUrl: "http://api.lumigame.com",
+        authUrl: "http://auth.lumigame.com",
         client: {
             id: "game-server",
             secret: "gameserver@20luminet&",
@@ -41,12 +41,9 @@ export default {
         },
     },
     sentry: {
-        sentryUrl: "https://13f39b8359404ed5aec23655e64ccf78@sentry.lumigame.com/2",
+        sentryUrl: "https://c9800a77cde44628ae983c6dfabfc7d9@sentryuat.sabagame.com/113",
         logIdentifier: "keno-match",
-        env: "DEV",
-    },
-    authenticateSettings: {
-        audiences: ["api", "admin-api"],
+        env: "LOCAL",
     },
     adminSecretKey: "asWDEerfOIdgsdqRTFabvmgh",
     enableCorsWs: false,

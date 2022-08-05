@@ -30,4 +30,4 @@ export const getSettlementResult = (totalPoints, isFirstHalf) => {
     }, {});
 };
 
-export const generateResult = (excludeNumbers) => shuffleNumbers(10, 80, excludeNumbers);
+export const generateResult = (randomMode, excludeNumbers) => shuffleNumbers(randomMode, 10, 80, excludeNumbers);
