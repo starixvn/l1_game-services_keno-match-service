@@ -31,13 +31,11 @@ const schema = new mongoose.Schema({
     refund: { type: Number, default: 0 },
     totalAmount: { type: Number, default: 0 },
 
-    memberId: { type: Number },
     siteId: { type: String },
     freeBet: { type: Boolean, default: false },
 
     currency: { type: String, require: true },
     rate: { type: Number, require: true },
-    partnerId: { type: String, require: true },
 
     playerId: { type: Number },
     operatorId: { type: String, require: true },

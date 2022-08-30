@@ -9,12 +9,10 @@ const schema = new mongoose.Schema({
     choice: { type: String, required: true },
     amount: { type: Number, required: true },
 
-    memberId: { type: Number },
     siteId: { type: String },
 
     currency: { type: String, require: true },
     rate: { type: Number, require: true },
-    partnerId: { type: String, require: true },
 
     playerId: { type: Number },
     operatorId: { type: String, require: true },

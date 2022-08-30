@@ -34,13 +34,13 @@ describe("history quer test", () => {
             betsRepository
                 .find()
                 .lean()
-                .exec.mockReturnValueOnce([{ uid: 1, phien: 1, odd: 100, even: 50 }]);
+                .exec.mockReturnValueOnce([{ uid: 1, roundId: 1, odd: 100, even: 50 }]);
             betLogsRepository
                 .find()
                 .lean()
                 .exec.mockReturnValueOnce([
-                    { uid: 1, phien: 1, choice: "ftBlue" },
-                    { uid: 1, phien: 1, choice: "ftRed" },
+                    { uid: 1, roundId: 1, choice: "ftBlue" },
+                    { uid: 1, roundId: 1, choice: "ftRed" },
                 ]);
 
             let actualResult = await historyQuery.queryHistory({ UID: 1 }, 1, 10);
