@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const schema = new mongoose.Schema({
     uid: { type: String, required: true },
     name: { type: String, required: true },
-    phien: { type: Number, required: true },
     time: { type: Date },
 
     choice: { type: String, required: true },
