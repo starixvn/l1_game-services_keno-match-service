@@ -39,7 +39,7 @@ export const createTestData = async () => {
     await createGameConfig(gameConfig);
     const partnerConfig = await createPartnerConfig(game.id);
 
-    const currency = await createDummyCurrency(partnerConfig.partnerId, currencyData.code, currencyData.name);
+    const currency = await createDummyCurrency(partnerConfig.operatorId, currencyData.code, currencyData.name);
     await createglobalConfigData();
     await createCurrencyGroupGames(currency.groupId, game.id, gameConfig);
     await createDummyUsers(currency);
@@ -50,8 +50,8 @@ export const createTestData = async () => {
     process.exit(0);
 };
 
-const getUserId = async (memberId) => {
-    const user = await users.findOne({ "local.memberId": memberId }, { _id: true }).lean();
+const getUserId = async (playerId) => {
+    const user = await users.findOne({ "local.playerId": playerId }, { _id: true }).lean();
     return user._id.toString();
 };
 
@@ -64,7 +64,7 @@ const createRounds = async () => {
 };
 
 const createUserBetData = async () => {
-    const userId = await getUserId(normalUser.memberId);
+    const userId = await getUserId(normalUser.playerId);
     const betData = userBetData(userId);
     return bets("kenomatch1_cuocs").insertMany(betData);
 };

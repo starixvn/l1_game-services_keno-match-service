@@ -14,7 +14,7 @@ export class HistoryQuery extends Core.QueryApis.HistoryQuery {
             uid: false,
             thanhtoan: false,
             siteId: false,
-            memberId: false,
+            playerId: false,
             __v: false,
             __archive: false,
         };
