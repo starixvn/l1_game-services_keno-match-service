@@ -215,7 +215,6 @@ const userBetData = (uid) => {
         {
             uid,
             name: "NormalUser",
-            phien: 1190119,
             choice: "fhOdd",
             amount: 100,
             roundId: 363310,
@@ -228,7 +227,6 @@ const userBetData = (uid) => {
         {
             uid,
             name: "NormalUser",
-            phien: 1190119,
             choice: "fhOdd",
             amount: 100,
             roundId: 363310,

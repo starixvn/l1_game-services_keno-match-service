@@ -6,13 +6,13 @@ export class HistoryQuery extends Core.QueryApis.HistoryQuery {
             return {};
         }
 
-        const filter = { uid: player.UID, thanhtoan: true };
+        const filter = { uid: player.UID, paid: true };
         const numberOfSkippedBets = (page - 1) * pageSize;
         const total = await this.betsRepository.countDocuments(filter).exec();
         const betProjection = {
             _id: false,
             uid: false,
-            thanhtoan: false,
+            paid: false,
             siteId: false,
             playerId: false,
             __v: false,
@@ -27,8 +27,10 @@ export class HistoryQuery extends Core.QueryApis.HistoryQuery {
         if (bets && bets.length > 0) {
             betLogs = await Promise.all(
                 bets.map(async (bet) => {
-                    const round = await this.roundQuery.getOne(bet.phien, { _id: false });
-                    const betLogDetails = this.betLogsRepository ? await this.getBetLogDetails(player, bet.phien) : [];
+                    bet.phien = bet.roundId;
+
+                    const round = await this.roundQuery.getOne(bet.roundId, { _id: false });
+                    const betLogDetails = this.betLogsRepository ? await this.getBetLogDetails(player, bet.roundId) : [];
 
                     return {
                         ...this.convertBet(bet),

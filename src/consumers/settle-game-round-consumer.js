@@ -43,7 +43,6 @@ export class SettleGameRoundConsumer extends Core.BaseEventConsumers.SettleGameR
 
                     bet.betwin = betResult.totalWin - betResult.refund;
                     bet.refund = betResult.refund;
-                    bet.thanhtoan = true;
                     bet.paid = true;
                     bet.odds = odds;
 
