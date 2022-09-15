@@ -54,6 +54,7 @@ export default {
         "https://l1-games3.lumigame.com",
         "https://l1-admin3.lumigame.com",
         "https://l1-m3.lumigame.com",
+        "https://l1-keno3.lumigame.com",
     ],
     metrics: {
         enable: true,
