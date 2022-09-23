@@ -8087,10 +8087,10 @@ sc-common@1.8.1:
     mongoose-long "^0.3.0"
     numeral "^2.0.6"
 
-sc-game-base@3.1.0:
-  version "3.1.0"
-  resolved "https://npm.lumigame.com/sc-game-base/-/sc-game-base-3.1.0.tgz#f5dac651391c86658dfd99478f81d869ef9f4340"
-  integrity sha512-7bAyn0pP7aWqRAv5ose4ilayU9IzeeHpt8TjaisG8ljGJzPrrLHwg/WiKzspdQM0Sjs5js/h+4tltGdk+wAdqQ==
+sc-game-base@3.1.1-beta.0:
+  version "3.1.1-beta.0"
+  resolved "https://npm.lumigame.com/sc-game-base/-/sc-game-base-3.1.1-beta.0.tgz#29261d34cf1eac757dadd7f3914ced5e479c616e"
+  integrity sha512-xhI3dwluwamSia+ZuQBC7Ovmhtxf/xstHHBRheAOU1ZMb/dFWP6FibILi08xAniLGO3zPMitThbKvWt1agkDuw==
   dependencies:
     awilix "^4.3.1"
     axios "^0.20.0"
@@ -8111,22 +8111,22 @@ sc-game-base@3.1.0:
     socket.io-msgpack-parser "^3.0.1"
     socket.io-prom-metrics "^1.0.3"
 
-sc-game-service-integration-utils@1.3.2:
-  version "1.3.2"
-  resolved "https://npm.lumigame.com/sc-game-service-integration-utils/-/sc-game-service-integration-utils-1.3.2.tgz#b6179049647bc3b99d28a88d54f1a20a448162cd"
-  integrity sha512-0Et2gMd2Ytsf7vVSDnAEdzsqchOha62TIgyj17Tj/4lUAC2CbSRxJEKwo/TaAHv3rpM6cK+fxR+uHwKMhT9VVg==
+sc-game-service-integration-utils@1.3.3-beta.0:
+  version "1.3.3-beta.0"
+  resolved "https://npm.lumigame.com/sc-game-service-integration-utils/-/sc-game-service-integration-utils-1.3.3-beta.0.tgz#dc82a9d95d267cc6e93a992b5b7322ff91b8dbf8"
+  integrity sha512-GiTi3oSWt4Eq/wV4P3SU50wHQdMICJ/CZq/9gMFSl3DDIikfghM/DEqwpDOIhEC1p1cGpQEDRcE6Odo0l3P2bg==
   dependencies:
     lodash.matches "^4.6.0"
     nock "^13.2.1"
-    sc-game-base "3.1.0"
+    sc-game-base "3.1.1-beta.0"
     socket.io-client "^4.4.0"
 
-sc-multiple-games-base@1.8.1:
-  version "1.8.1"
-  resolved "https://npm.lumigame.com/sc-multiple-games-base/-/sc-multiple-games-base-1.8.1.tgz#b0341f8e7fb26c9b15754c751b9a346c67dadadd"
-  integrity sha512-HSmWY4koARm7tll1nsIAX+nBoZrUl3VlI2VWKKLNxPQfOQGzgHnI4YNQvVUhW7jZEMzhheuo50wsXWcSemOyEg==
+sc-multiple-games-base@1.8.3-beta.1:
+  version "1.8.3-beta.1"
+  resolved "https://npm.lumigame.com/sc-multiple-games-base/-/sc-multiple-games-base-1.8.3-beta.1.tgz#67b6dbece4879a42d70a1acb739ffc083b2c3c63"
+  integrity sha512-NWZbLbyTnsXwEsoRc8f0LP9C1oSL5PxfmBHeNJGbbqfNjXUxrwq65H3byJH2YoX1puRL0aCASqQde4TWu1jHrQ==
   dependencies:
-    sc-game-base "3.1.0"
+    sc-game-base "3.1.1-beta.0"
 
 sc-semantic-release@^1.1.0:
   version "1.2.0"
