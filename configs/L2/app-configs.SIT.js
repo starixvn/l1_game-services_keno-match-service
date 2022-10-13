@@ -54,6 +54,7 @@ export default {
         "https://l2sitadm.sgamesuat.com",
         "http://l2sitm.sgamesuat.com",
         "https://l2sitm.sgamesuat.com",
+        "https://l2sitkeno.sgamesuat.com",
     ],
     metrics: {
         enable: true,

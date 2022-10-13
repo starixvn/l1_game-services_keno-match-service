@@ -58,6 +58,7 @@ export default {
         "http://localhost:3000",
         "http://l2-m1.lumigame.com",
         "https://l2-m1.lumigame.com",
+        "https://l2-keno1.lumigame.com",
     ],
     metrics: {
         enable: true,
