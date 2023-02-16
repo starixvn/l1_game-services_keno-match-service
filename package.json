@@ -5,7 +5,7 @@
     "repository": "https://git3.nexdev.net/l1/game-services/keno-match-service.git",
     "author": "pentagon",
     "license": "MIT",
-    "type": "module", 
+    "type": "module",
     "scripts": {
         "test": "jest --testPathPattern=tests/unit-tests/",
         "test-coverage": "jest --collect-coverage --testPathPattern=tests/unit-tests/",
@@ -25,7 +25,11 @@
         "d3-array": "^3.2.0",
         "lodash": "^4.17.21",
         "random-js": "^2.1.0",
-        "sc-multiple-games-base": "1.8.4"
+        "sc-multiple-games-base": "1.8.4",
+        "sc-game-base": "3.3.0"
+    },
+    "resolutions": {
+        "sc-game-base": "3.3.0"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.12.11",
