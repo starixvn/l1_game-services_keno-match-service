@@ -45,7 +45,7 @@ const random2 = (numberOfPicked, numberOfSeeds, excludeNumbers) => {
 const random3 = (numberOfPicked, numberOfSeeds, excludeNumbers) =>
     _.shuffle(_.shuffle(_.shuffle(generateSeeds(numberOfSeeds, excludeNumbers)))).slice(0, numberOfPicked);
 
-const randomModes = {
+export const randomModes = {
     1: [random1],
     2: [random2],
     3: [random3],
